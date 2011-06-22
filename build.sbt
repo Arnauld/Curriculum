@@ -14,16 +14,17 @@ libraryDependencies ++= Seq(
   // web
   "org.scalatra" %% "scalatra" % "2.0.0-SNAPSHOT",
   "org.scalatra" %% "scalatra-specs" % "2.0.0-SNAPSHOT" % "test",
+  "org.scalatra" %% "scalatra-scalate" % "2.0.0-SNAPSHOT",
   "org.mortbay.jetty" % "jetty" % "6.1.22" % "jetty",
   "javax.servlet" % "servlet-api" % "2.5" % "provided->default",
-  
+  //misc
+  "commons-io" % "commons-io" % "2.0.1",
+  "commons-codec" % "commons-codec" % "1.5",
   // logs
   "org.slf4j" % "slf4j-api" % "1.6.0",
-  "ch.qos.logback" % "logback-classic" % "0.9.25" % "runtime"
-
+  "ch.qos.logback" % "logback-classic" % "0.9.25",
   // persistence BerkeleyDB :p
-  "com.sleepycat" % "je" % "4.0.92"
-
+  "com.sleepycat" % "je" % "4.0.92",
   //test
   "org.scala-tools.testing" %% "specs" % "1.6.8" % "test"
 )
@@ -32,5 +33,6 @@ resolvers ++= Seq(
   "Oracle Repo" at "http://download.oracle.com/maven",
   "Sonatype OSS" at "http://oss.sonatype.org/content/repositories/releases/",
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-  "Web plugin repo" at "http://siasia.github.com/maven2"
+  "Web plugin repo" at "http://siasia.github.com/maven2",
+  "FuseSource Snapshot Repository" at "http://repo.fusesource.com/nexus/content/repositories/snapshots"
 )

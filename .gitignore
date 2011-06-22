@@ -13,3 +13,4 @@ lib_managed
 project/boot
 project/target
 target
+logs
