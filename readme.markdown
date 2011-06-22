@@ -10,8 +10,10 @@ Misc
 ==============================================
 
 logs
-    tail -f logs/curriculum.log
+
+        tail -f logs/curriculum.log
 
 jetty
-    ~sbt> jetty-run
+
+        ~sbt> jetty-run
 
