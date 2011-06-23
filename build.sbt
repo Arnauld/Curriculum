@@ -20,11 +20,13 @@ libraryDependencies ++= Seq(
   //misc
   "commons-io" % "commons-io" % "2.0.1",
   "commons-codec" % "commons-codec" % "1.5",
+  "joda-time" % "joda-time" % "1.6.2",
+  /*"com.google.inject" % "guice" % "3.0",*/
   // logs
   "org.slf4j" % "slf4j-api" % "1.6.0",
   "ch.qos.logback" % "logback-classic" % "0.9.25",
   // persistence BerkeleyDB :p
-  "com.sleepycat" % "je" % "4.0.92",
+  /*"com.sleepycat" % "je" % "4.0.92",*/
   //test
   "org.scala-tools.testing" %% "specs" % "1.6.8" % "test"
 )
