@@ -1,4 +1,4 @@
-Curriculum: a EAV based curriculum vitae
+Curriculum: an EAV based curriculum vitae
 ==============================================
 
 ## Libraries
@@ -7,7 +7,7 @@ Curriculum: a EAV based curriculum vitae
 * [SBT web plugin](https://github.com/siasia/xsbt-web-plugin)
 * [Scalatra](https://github.com/scalatra/scalatra)
 * [Berkeley DB](http://www.oracle.com/technetwork/database/berkeleydb/overview/index.html) for persistence
-* [Guice]()
+* [Guice](http://code.google.com/p/google-guice/)
 
 ## Patterns
 
