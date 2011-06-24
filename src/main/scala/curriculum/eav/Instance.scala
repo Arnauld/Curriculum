@@ -3,6 +3,9 @@ package curriculum.eav
 class Instance(val id:Option[Long], val entity:Entity) extends HasId {
   private var valuesMap = Map[String,Value]()
 
+  def apply(attributeName:String) = getAttributeValue(attributeName)
+  def apply(attributeName:String, value:Value) = setAttributeValue(attributeName, value)
+
   def setAttributeValue(attributeName:String, value:Value) {
     valuesMap += (attributeName -> value)
   }
