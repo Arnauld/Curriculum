@@ -1,15 +1,20 @@
 package curriculum.eav
 
+import curriculum.util.HasLabel
+
 object Entity {
-  import Attribute._
-  def apply(entityName:String, attributes:(String,DataType)*):Entity = {
+  def apply(entityName:String, attributes:Attribute*):Entity = {
     val entity = new Entity(entityName)
     attributes.foreach(entity.declare(_))
     entity
   }
 }
 
-class Entity(val entityName:String) {
+class Entity(val entityName:String)  extends HasLabel {
+
+  val entityType = EntityType(entityName)
+
+  val defaultLabel = entityName
 
   private var attributes = Map[String,Attribute]()
 
@@ -21,7 +26,13 @@ class Entity(val entityName:String) {
 
   def getAttribute(attributeName:String) = attributes.get(attributeName)
 
-  def newInstance = new Instance(None, this)
+  def newInstance:Instance = new Instance(None, this)
+  
+  def newInstance(attributeValues:(String,Any)*):Instance = {
+    val instance = new Instance(None, this)
+    attributeValues.foreach(instance.setAttributeValue(_))
+    instance
+  }
 }
 
 object Attribute {
@@ -30,5 +41,9 @@ object Attribute {
 
 class Attribute(val attributeName:String,
                 val dataType:DataType,
-                val defaultValue:Option[Value] = None)
+                val defaultValue:Option[Any] = None,
+                val upperBound:Int = 1,
+                val lowerBound:Int = 0) extends HasLabel {
+  val defaultLabel = attributeName
+}
 

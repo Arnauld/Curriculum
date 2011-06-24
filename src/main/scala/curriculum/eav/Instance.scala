@@ -1,12 +1,18 @@
 package curriculum.eav
 
 class Instance(val id:Option[Long], val entity:Entity) extends HasId {
-  private var valuesMap = Map[String,Value]()
+  private var valuesMap = Map[String,Any]()
 
   def apply(attributeName:String) = getAttributeValue(attributeName)
-  def apply(attributeName:String, value:Value) = setAttributeValue(attributeName, value)
+  def apply(attributeName:String, value:Any) {
+    setAttributeValue(attributeName, value)
+  }
 
-  def setAttributeValue(attributeName:String, value:Value) {
+  def setAttributeValue(nameValuePair:(String, Any)) {
+    valuesMap += nameValuePair
+  }
+  
+  def setAttributeValue(attributeName:String, value:Any) {
     valuesMap += (attributeName -> value)
   }
 
