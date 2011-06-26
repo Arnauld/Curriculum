@@ -5,7 +5,7 @@ import java.util.Locale
 trait HasLabel {
   def defaultLabel: String
 
-  val labels = scala.collection.mutable.Map[Locale, String]()
+  private var labels = Map[Locale, String]()
 
   def hasLabel(locale: Locale) = labels.contains(locale)
 
@@ -13,4 +13,10 @@ trait HasLabel {
     case Some(label) => label
     case _ => defaultLabel
   }
+
+  def setLabel(locale: Locale, value:String) {
+    labels += (locale -> value)
+  }
+
+  def getLabels = labels
 }

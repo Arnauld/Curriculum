@@ -13,7 +13,7 @@ class EntitySpecs extends Specification {
       val civility = Entity("civility",
         ("FirstName", TextType),
         ("LastName", TextType),
-        ("DateOfBirth", LocaleDateType),
+        ("DateOfBirth", LocalDateType),
         ("Gender", gender.entityType)
       )
       civility.entityName mustEq "civility"
@@ -26,7 +26,7 @@ class EntitySpecs extends Specification {
     val civilityEntity = Entity("civility",
       ("FirstName", TextType),
       ("LastName", TextType),
-      ("DateOfBirth", LocaleDateType),
+      ("DateOfBirth", LocalDateType),
       ("Gender", genderEntity.entityType)
     )
     "not have any value by default" in {

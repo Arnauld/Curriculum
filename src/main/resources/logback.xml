@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="curriculum" level="debug"/>
+    <logger name="curriculum" level="DEBUG"/>
 
     <root level="warn">
         <appender-ref ref="FILE"/>

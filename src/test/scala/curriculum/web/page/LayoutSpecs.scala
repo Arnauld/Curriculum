@@ -1,8 +1,11 @@
 package curriculum.web.page
 
 import org.specs.Specification
+import org.slf4j.LoggerFactory
 
 class LayoutSpecs extends Specification {
+
+  val _logger = LoggerFactory.getLogger(classOf[LayoutSpecs])
 
   "Layout" should {
     "merge a simple page easily" in {
@@ -24,7 +27,7 @@ class LayoutSpecs extends Specification {
         </html>
 
       val html = layout.render(pageData)
-      println(html.toString)
+      _logger.debug(html.toString)
     }
   }
 }

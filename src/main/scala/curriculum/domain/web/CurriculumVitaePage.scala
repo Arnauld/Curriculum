@@ -1,7 +1,8 @@
-package curriculum.web.page
+package curriculum.domain.web
 
-import curriculum.web.page.InstanceTemplate._
 import curriculum.eav.Instance
+import curriculum.web.page.HtmlPage
+import curriculum.web.page.InstanceTemplate._
 import xml.NodeSeq
 
 class CurriculumVitaePage(val instance: Instance) extends HtmlPage {
@@ -10,9 +11,9 @@ class CurriculumVitaePage(val instance: Instance) extends HtmlPage {
 
   bodyContent = renderInstance(instance("civility"), renderCivility(_)) ++
     renderInstance(instance("summary"), renderSummary(_)) ++
-    renderInstance(instance("experience"), renderExperience(_)) ++
-    renderInstance(instance("skills"), renderSkills(_)) ++
-    renderInstance(instance("interests"), renderInterests(_))
+    renderList(instance("experiences"), renderExperience(_)) ++
+    renderList(instance("skills"), renderSkill(_)) ++
+    renderList(instance("interests"), renderInterest(_))
 
   def renderCivility(value: Instance): NodeSeq = NodeSeq.Empty
 
@@ -20,8 +21,8 @@ class CurriculumVitaePage(val instance: Instance) extends HtmlPage {
 
   def renderExperience(value: Instance): NodeSeq = NodeSeq.Empty
 
-  def renderSkills(value: Instance): NodeSeq = NodeSeq.Empty
+  def renderSkill(value: Instance): NodeSeq = NodeSeq.Empty
 
-  def renderInterests(value: Instance): NodeSeq = NodeSeq.Empty
+  def renderInterest(value: Instance): NodeSeq = NodeSeq.Empty
 
 }
