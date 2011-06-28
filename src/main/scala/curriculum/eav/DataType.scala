@@ -3,7 +3,9 @@ package curriculum.eav
 import org.joda.time.{Months, LocalDate}
 import xml.NodeSeq
 
-case class Ratio(numerator: Int, denominator: Int = 100)
+case class Ratio(numerator: Int, denominator: Int = 100) {
+  def toPercent:Int = (numerator*100)/denominator
+}
 case class LocalDateRange(min: LocalDate, max: LocalDate) {
   def duration: (Int, Int) = {
     val months = Months.monthsBetween(min, max).getMonths
