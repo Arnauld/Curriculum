@@ -32,5 +32,18 @@ class XmlSpecs extends Specification {
       selected must_== NodeSeq.Empty ++
           <link rel="stylesheet" type="text/css" href="mypage.css"/>
     }
+
+    "provide XPath support for a more complex query" in {
+      val divs = (pageData \ "body" \ "div").filter(_.attribute("class") match {
+        case None => false
+        case Some(n) => n.text == "content"
+      })
+      val selected = ( divs \ "_" )
+      selected must_== NodeSeq.Empty ++
+          <input type="text" value="Sherlock"/> ++
+          <p>
+            Elementary my dear Watson!
+          </p>
+    }
   }
 }

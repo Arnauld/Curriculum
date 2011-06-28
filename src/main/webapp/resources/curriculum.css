@@ -1,0 +1,135 @@
+body {
+	width: 800px;
+	margin: 30px auto;
+	font: 100%/140% Arial, Helvetica, sans-serif;
+}
+.credits {
+	margin-bottom: 80px;
+	padding-bottom: 30px;
+	border-bottom: solid 1px #ccc;
+}
+
+fieldset {
+	display:block;
+	margin: 1em 0;
+	border: none;
+	border-top: 1px solid #CCC;
+	font-size: 12px;
+}
+
+fieldset div.entry {
+	clear:both;
+	margin-bottom: .5em;
+	padding: 0;
+	display: block;
+}
+
+legend {
+	margin: 1em 0;
+	padding: 0 .5em;
+	color: #036;
+	background: transparent;
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+fieldset table td.field-label,
+label {
+	float: left;
+	width: 150px;
+	padding: 0 1em;
+	font-size: 12px;
+	font-weight: lighter;
+	font-style: italic;
+	text-align: right;
+}
+
+fieldset div.field-value,
+fieldset div input, 
+fieldset div textarea {
+	width: 150px;
+	padding: 5px;
+	height: 15px;
+}
+
+fieldset div input, fieldset div textarea {
+/*
+	border-top: 1px solid #555;
+	border-left: 1px solid #555;
+	border-bottom: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+*/
+	padding-left: 5px;
+	padding-right:5px;
+	margin:3px;
+	border: 1px solid #333;
+	border-radius: 15px;
+	color: #333;
+}
+
+/**
+ * Experience:
+ * 1/ indent them to break the flow
+ * 2/ adjust h1 size
+ * 3/ push company on right and period on left
+ */
+section.experience {
+	margin-left:40px;
+}
+section.experience div.experience-description {
+	margin-left:40px;
+}
+
+section.experience h1 {
+	font-size:14px;
+	margin-top:0.83em;
+	margin-bottom: 5px;
+	-webkit-margin-before: 0.83em;
+	-webkit-margin-after: 0em;
+}
+section.experience div.experience-company,
+section.experience div.experience-period {
+	font-size:12px;
+	display:inline;
+}
+section.experience div.experience-period {
+	font-style:italic;
+	color:#777;
+}
+section.experience div.experience-company {
+	margin-left: 10px;
+}
+section.experience div.experience-company a {
+	font-weight: bold;
+	color:#777;
+}
+section.experience div.experience-description h1 {
+	font-size:12px;
+	font-style:italic;
+}
+section.experience div.experience-description header {
+	font-size:12px;
+	font-style:italic;
+	width:300px;
+	text-align: right;
+}
+
+/**
+ * skills
+ */
+.skill-comment {
+	display:inline;
+	font-size:12px;
+	font-style:italic;
+	color:#777;
+}
+
+/**
+ * interests
+ */
+.interest-comment {
+	display:inline;
+	font-size:12px;
+	font-style:italic;
+	color:#777;
+}

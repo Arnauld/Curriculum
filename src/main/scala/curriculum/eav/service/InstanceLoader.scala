@@ -77,6 +77,8 @@ trait InstanceLoader {
         (node \ "_")
       case LocalDateType =>
         parseDate(node.text.trim())
+      case LocalDateRangeType =>
+         parseDateRange(node.text.trim())
       case RatioType =>
         parseRatio(node.text.trim())
       case EntityType(_) =>
@@ -112,6 +114,17 @@ trait InstanceLoader {
   def parseDate(value: String): LocalDate = {
     val DateRegex(year, month, day) = value
     new LocalDate(year.toInt, month.toInt, day.toInt)
+  }
+
+  def parseDateRange(value: String): LocalDateRange = {
+    val parts = value.split('-')
+    val dates = parts.map (parseDate(_))
+    // assume if there is one part, it is the min
+    dates.size match {
+      case 0 => LocalDateRange(null,null)
+      case 1 => LocalDateRange(dates(0),null)
+      case _ => LocalDateRange(dates(0),dates(1))
+    }
   }
 }
 

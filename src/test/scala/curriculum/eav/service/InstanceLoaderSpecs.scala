@@ -46,14 +46,20 @@ class InstanceLoaderSpecs extends Specification {
   }
 
   def dumpInstance(indent: Int, instance: Instance) {
+    var prefix = "  " * indent
+    print(prefix)
+    println("Instance of type <" + instance.entity.entityName + ">")
+    prefix = "  " * (indent+1)
     instance.getAttributeValues.foreach({
       attr =>
-        val prefix = "  " * indent
         print(prefix + attr._1 + ": ")
         attr._2 match {
           case inst: Instance =>
             println()
-            dumpInstance(indent + 1, inst)
+            dumpInstance(indent + 2, inst)
+          case list:List[Instance] =>
+            println()
+            list.foreach(dumpInstance(indent + 2, _))
           case other =>
             println(other)
         }

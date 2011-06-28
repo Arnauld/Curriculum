@@ -1,6 +1,7 @@
 package curriculum.eav
 
-import curriculum.util.HasLabel
+import curriculum.util.{HasHtmlDescription, HasLabel}
+import xml.NodeSeq
 
 object Entity {
   def apply(entityName:String, attributes:Attribute*):Entity = {
@@ -43,7 +44,8 @@ class Attribute(val attributeName:String,
                 val dataType:DataType,
                 val defaultValue:Option[Any] = None,
                 val upperBound:Int = 1,
-                val lowerBound:Int = 0) extends HasLabel {
+                val lowerBound:Int = 0) extends HasLabel with HasHtmlDescription {
   val defaultLabel = attributeName
+  def defaultHtmlDescription = NodeSeq.Empty
 }
 

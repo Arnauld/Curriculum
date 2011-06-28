@@ -9,7 +9,11 @@
         </encoder>
     </appender>
 
-    <logger name="curriculum" level="DEBUG"/>
+    <logger name="curriculum.domain" level="WARN"/>
+    <logger name="curriculum.eav" level="WARN"/>
+    <logger name="curriculum.eav.service.ModelLoader" level="DEBUG"/>
+    <logger name="curriculum.util" level="DEBUG"/>
+    <logger name="curriculum.web" level="DEBUG"/>
 
     <root level="warn">
         <appender-ref ref="FILE"/>

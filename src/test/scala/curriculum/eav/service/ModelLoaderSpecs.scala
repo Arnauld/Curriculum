@@ -17,7 +17,7 @@ class ModelLoaderSpecs extends Specification {
       val entityService = new EntityService {}
       val metaModelReader = new ModelLoader {
         def getEntityService = entityService
-        def log = _logger
+        def log = LoggerFactory.getLogger("curriculum.eav.service.ModelLoader")
       }
 
       metaModelReader.load(models)
@@ -27,6 +27,7 @@ class ModelLoaderSpecs extends Specification {
         entity.getAttributes.foreach({a =>
           val (name,attr) = a
           _logger.debug("  " + name + ": " + attr.dataType)
+          _logger.debug("  " + attr.getHtmlDescriptions)
         })
       })
     }

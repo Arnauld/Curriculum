@@ -2,10 +2,8 @@ package curriculum.eav.service
 
 import xml.{Node, NodeSeq}
 import curriculum.eav._
-import curriculum.util.{Locales, HasLabel}
 import org.slf4j.Logger
-import com.sun.tools.javac.util.Log
-import javax.management.remote.rmi._RMIConnection_Stub
+import curriculum.util.{HasHtmlDescription, Locales, HasLabel}
 
 trait ModelLoader {
 
@@ -58,6 +56,7 @@ trait ModelLoader {
 
     val attribute = new Attribute(attName, attType, None, upperBound)
     loadLabels(a, attribute)
+    loadHtmlDescriptions(a, attribute)
     c(attribute)
   }
 
@@ -67,6 +66,26 @@ trait ModelLoader {
         val locale = (l \ "@locale").text
         val value = l.text
         dst.setLabel(Locales.toLocale(locale), value)
+    })
+  }
+
+  def loadHtmlDescriptions(n: Node, dst: HasHtmlDescription) {
+    val htmlDescriptions = (n \ "descriptions").filter(_.attribute("type") match {
+      case None => false
+      case Some(n) => n.text == "html"
+    })
+
+    log.info("Loading #{} html description", htmlDescriptions.size)
+
+    (htmlDescriptions \ "description").foreach({
+      l: Node =>
+        val locale = (l \ "@locale").text
+        val value = (l \ "_") match {
+          case NodeSeq.Empty => scala.xml.Text(l.text.trim())
+          case nodes => nodes
+        }
+        log.debug("Loading description <{}>/<{}>", locale, value.text)
+        dst.setHtmlDescription(Locales.toLocale(locale), value)
     })
   }
 }

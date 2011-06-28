@@ -4,6 +4,10 @@ import org.scalatra._
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
 import curriculum.util.{Bytes, Strings}
+import page.Layout
+import curriculum.eav.service.{InstanceLoader, InstanceService, ModelLoader, EntityService}
+import curriculum.domain.{CurriculumVitaeInstances, CurriculumVitaeModels}
+import curriculum.domain.web.CurriculumVitaePage
 
 class CurriculumFilter extends ScalatraFilter with ResourceSupport {
 
@@ -39,26 +43,59 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport {
   */
 
   get("/arnauld") {
-    <html><body>Nothing yet!</body></html>
+    val logRef = log
+    val entityService = new EntityService {}
+    val modelReader = new ModelLoader {
+      def getEntityService = entityService
+
+      def log = LoggerFactory.getLogger("curriculum.eav.service.ModelLoader")
+    }
+    val instanceService = new InstanceService {}
+    val instanceReader = new InstanceLoader {
+      def getInstanceService = instanceService
+
+      def getEntityService = entityService
+
+      def log = LoggerFactory.getLogger("curriculum.eav.service.InstanceLoader")
+    }
+    modelReader.load(CurriculumVitaeModels.Models)
+    val male = instanceReader.loadInstance(CurriculumVitaeInstances.GenreMale)
+    val female = instanceReader.loadInstance(CurriculumVitaeInstances.GenreFemale)
+    instanceService.register(male)
+    instanceService.register(female)
+
+    val instance = instanceReader.loadInstance(CurriculumVitaeInstances.Arnauld)
+
+    /*
+     * generate page
+     */
+    val page = new CurriculumVitaePage(instance)
+    val layout = new Layout {}
+    layout.render(page.content)
   }
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  var skipResourceManagement = true
   get("/resources/*") {
-    val what = params("splat")
-    val ctype = Strings.extensionOf(what).toLowerCase match {
-      case "css" => Some("text/css")
-      case "js" => Some("text/javascript")
-      case "png" => Some("image/png")
-      case _ => None
-    }
-    ctype match {
-      case None =>
-        log.warn("Invalid resource <" + what + "> queried")
-        response.setStatus(HttpURLConnection.HTTP_NOT_ACCEPTABLE)
-        Bytes.EMPTY
-      case Some(ctype) =>
-        getResource("/resources/" + what, ctype)
+    skipResourceManagement match {
+      case true => pass()
+      case _ =>
+        val what = params("splat")
+        val ctype = Strings.extensionOf(what).toLowerCase match {
+          case "css" => Some("text/css")
+          case "js" => Some("text/javascript")
+          case "png" => Some("image/png")
+          case _ => None
+        }
+        ctype match {
+          case None =>
+            log.warn("Invalid resource <" + what + "> queried")
+            response.setStatus(HttpURLConnection.HTTP_NOT_ACCEPTABLE)
+            Bytes.EMPTY
+          case Some(ctype) =>
+            getResource("/resources/" + what, ctype)
+        }
     }
   }
 

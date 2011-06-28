@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>../cv/src/main/webapp/resume.html</string>
+	<string>src/main/webapp/resources/curriculum.css</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,60 +26,184 @@
 			<key>sourceDirectory</key>
 			<string></string>
 		</dict>
+		<dict>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>technbolts-smog</string>
+			<key>regexFolderFilter</key>
+			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
+			<key>sourceDirectory</key>
+			<string>../technbolts-smog</string>
+		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>279</integer>
 	<key>metaData</key>
 	<dict>
-		<key>../cv/src/main/webapp/css/resume.css</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>19</integer>
-				<key>line</key>
-				<integer>32</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>../cv/src/main/webapp/resume.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
+				<integer>16</integer>
+				<key>line</key>
+				<integer>358</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>318</integer>
+		</dict>
+		<key>../cv/src/main/webapp/ui-progress-bar/stylesheets/ui.progress-bar.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
+				<key>line</key>
+				<integer>90</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>88</integer>
+		</dict>
+		<key>../technbolts-smog/src/main/scala/org/technbolts/smog/web/HomePage.scala</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
 				<integer>0</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
+		</dict>
+		<key>../technbolts-smog/src/main/scala/org/technbolts/smog/web/LoginPage.scala</key>
+		<dict>
+			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>6</integer>
+				<integer>0</integer>
 				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>../technbolts-smog/src/main/scala/org/technbolts/smog/web/MainPage.scala</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>../technbolts-smog/src/main/webapp/WEB-INF/scalate/layouts/default.scaml</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>13</integer>
+				<key>line</key>
+				<integer>11</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>../technbolts-smog/src/main/webapp/WEB-INF/scalate/templates/hello-scalate.scaml</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>15</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>build.sbt</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>1</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/main/webapp/resources/curriculum.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>121</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>84</integer>
+		</dict>
+		<key>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>15</integer>
+				<key>line</key>
+				<integer>2</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.progress-bar.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
 				<integer>19</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>90</integer>
 			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>60</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>../cv/src/main/webapp/css/resume.css</string>
 		<string>../cv/src/main/webapp/resume.html</string>
+		<string>build.sbt</string>
+		<string>src/main/webapp/resources/curriculum.css</string>
+		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</string>
+		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.progress-bar.css</string>
+		<string>../cv/src/main/webapp/ui-progress-bar/stylesheets/ui.progress-bar.css</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
