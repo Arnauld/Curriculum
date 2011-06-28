@@ -152,13 +152,13 @@ object CurriculumVitaeInstances {
           <instance type="curriculum:skill">
             <attributes>
               <attribute name="title">Java</attribute>
-              <attribute name="level">95/100</attribute>
+              <attribute name="level">100/100</attribute>
               <attribute name="level_comment">SE 11ans/EE 3ans</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">
             <attributes>
-              <attribute name="title">Domain|Test|Behavior] Driven Design</attribute>
+              <attribute name="title">[Domain|Test|Behavior] Driven Design</attribute>
               <attribute name="level">85/100</attribute>
               <attribute name="level_comment">~5ans</attribute>
             </attributes>
@@ -172,24 +172,17 @@ object CurriculumVitaeInstances {
           </instance>
           <instance type="curriculum:skill">
             <attributes>
-              <attribute name="title">Hibernate</attribute>
+              <attribute name="title">Frameworks, Librairies</attribute>
               <attribute name="level">70/100</attribute>
-              <attribute name="level_comment">~3ans</attribute>
+              <attribute name="comment">Hibernate, Spring, Quartz, Struts 1&amp;2, WebServices...</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">
             <attributes>
-              <attribute name="title">Spring</attribute>
-              <attribute name="level">70/100</attribute>
-              <attribute name="level_comment">~4ans</attribute>
-            </attributes>
-          </instance>
-          <instance type="curriculum:skill">
-            <attributes>
-              <attribute name="title">Agile</attribute>
+              <attribute name="title">Agilité</attribute>
               <attribute name="level">65/100</attribute>
               <attribute name="level_comment">~3ans</attribute>
-              <attribute name="comment">Interêt depuis ~2004</attribute>
+              <attribute name="comment">Sensibilisé ~2004, XP, Scrum, Mingle, post-it...</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">
@@ -201,23 +194,22 @@ object CurriculumVitaeInstances {
           </instance>
           <instance type="curriculum:skill">
             <attributes>
-              <attribute name="title">SQL</attribute>
-              <attribute name="level">35/100</attribute>
-              <attribute name="level_comment">~9ans</attribute>
-            </attributes>
-          </instance>
-          <instance type="curriculum:skill">
-            <attributes>
               <attribute name="title">Eclipse RCP / EMF</attribute>
               <attribute name="level">45/100</attribute>
-              <attribute name="level_comment">~3ans</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">
             <attributes>
               <attribute name="title">Outils</attribute>
-              <attribute name="level">45/100</attribute>
-              <attribute name="comment">Maven, Ant, Hudson, JBehave...</attribute>
+              <attribute name="level">65/100</attribute>
+              <attribute name="comment">Maven, Ant, Hudson, JBehave, SQL...</attribute>
+            </attributes>
+          </instance>
+          <instance type="curriculum:skill">
+            <attributes>
+              <attribute name="title">Web</attribute>
+              <attribute name="level">60/100</attribute>
+              <attribute name="comment">javascript, CSS, html...</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">

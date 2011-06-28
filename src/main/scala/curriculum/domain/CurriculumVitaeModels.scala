@@ -182,6 +182,11 @@ object CurriculumVitaeModels {
           <labels>
             <label locale="fr_FR">Compétences</label>
           </labels>
+          <descriptions type="html">
+            <description locale="fr_FR">
+              Les niveaux sont donnés à titre indicatif afin de mieux cerner le profil.
+            </description>
+          </descriptions>
         </attribute>
         <attribute name="interests" type="curriculum:interest" upper_bound="-1">
           <labels>
