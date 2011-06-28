@@ -1,22 +1,23 @@
 package curriculum.util
 
 import java.util.Locale
+import xml.NodeSeq
 
 trait HasHtmlDescription {
-  def defaultDescription: String
+  def defaultHtmlDescription: NodeSeq
 
-  private var descriptions = Map[Locale, String]()
+  private var descriptions = Map[Locale, NodeSeq]()
 
-  def hasDescription(locale: Locale) = descriptions.contains(locale)
+  def hasHtmlDescription(locale: Locale) = descriptions.contains(locale)
 
-  def getDescription(locale: Locale) = descriptions.get(locale) match {
+  def getHtmlDescription(locale: Locale) = descriptions.get(locale) match {
     case Some(desc) => desc
-    case _ => defaultDescription
+    case _ => defaultHtmlDescription
   }
 
-  def setDescription(locale: Locale, value:String) {
+  def setHtmlDescription(locale: Locale, value:NodeSeq) {
     descriptions += (locale -> value)
   }
 
-  def getDescriptions = descriptions
+  def getHtmlDescriptions = descriptions
 }
