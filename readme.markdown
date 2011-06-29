@@ -20,6 +20,8 @@ Curriculum: an EAV based curriculum vitae
 ### EAV design
 
 EAV meta models are defined in `curriculum/eav`
+
+
 * `DataType.scala` contains all the predefined DataType currently supported by the models
 * `Entity.scala` define the Entity/Attribute meta models and their relationship. Entity provides method to create corresponding
    new instance.
@@ -29,6 +31,7 @@ EAV meta models are defined in `curriculum/eav`
 
 
 `curriculum/eav/service` contains the basic layer of service
+
 * `ModelLoader` is an xml loader of entity definitions, see `curriculum/domain/CurriculumVitaeModels` for a sample model.
 * `InstanceLoader` is an xml loader of instances, see `curriculum/domain/CurriculumVitaeModels` for sample instances based on the previous models.
 * InstanceService`/`EntityService` provides basic functionality around instance and model, such as basic repository
@@ -48,6 +51,7 @@ to have a basic support for localization of models.
 Web support is provided by the use of *scalatra* (entry point `CurriculumFilter`) and XML manipulation for page rendering.
 
 Currently the page rendering is based on raw html (manipulated as xml). This has been done in order to:
+
 * understand how to manipulate XML through scala: read, write, xpath, merge...
 * since XML support is builtin in scala. A lot of data navigation issues is detected early at compilation.
 
