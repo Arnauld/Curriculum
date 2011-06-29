@@ -20,16 +20,16 @@ Curriculum: an EAV based curriculum vitae
 ### EAV design
 
 * EAV meta models are defined in `curriculum/eav`
-** `DataType.scala` contains all the predefined DataType currently supported by the models
-** `Entity.scala` define the Entity/Attribute meta models and their relationship. Entity provides method to create corresponding
+* * `DataType.scala` contains all the predefined DataType currently supported by the models
+* * `Entity.scala` define the Entity/Attribute meta models and their relationship. Entity provides method to create corresponding
    new instance.
-** `Instance.scala` is the default implementation of an instance, it stores the values of the attributes that are defined
+* * `Instance.scala` is the default implementation of an instance, it stores the values of the attributes that are defined
    in the corresponding entity.
-** `Persistent.scala` is not yet used, and serves as storage for my random thoughts around persistent behavior.
+* * `Persistent.scala` is not yet used, and serves as storage for my random thoughts around persistent behavior.
 * `curriculum/eav/service` contains the basic layer of service
-** `ModelLoader` is an xml loader of entity definitions, see `curriculum/domain/CurriculumVitaeModels` for a sample model.
-** `InstanceLoader` is an xml loader of instances, see `curriculum/domain/CurriculumVitaeModels` for sample instances based on the previous models.
-** InstanceService`/`EntityService` provides basic functionality around instance and model, such as basic repository
+* * `ModelLoader` is an xml loader of entity definitions, see `curriculum/domain/CurriculumVitaeModels` for a sample model.
+* * `InstanceLoader` is an xml loader of instances, see `curriculum/domain/CurriculumVitaeModels` for sample instances based on the previous models.
+* * InstanceService`/`EntityService` provides basic functionality around instance and model, such as basic repository
 
 ### EAV sample case: Curriculum Vitae
 
