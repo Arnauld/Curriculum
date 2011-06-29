@@ -136,9 +136,11 @@ object CurriculumVitaeInstances {
                   <section>
                     <h1>Participation à la mise en place d'une méthodologie de développement agile SCRUM</h1>
                     <ul>
-                      <li>Amellioration de la couverture de tests</li>
-                      <li>Mise en place de tests d'intégrations</li>
-                      <li>Mise en place d'une intégration continue</li>
+                      <li>Sensibilisation de l'équipe à la méthodologie, pair programming, engagement de l'équipe
+                        découpage et évaluation en "points"...
+                      </li>
+                      <li>Sensibilisation de la société à la méthodologie</li>
+                      <li>Amellioration de la couverture de tests, tests d'integration et intégration continue</li>
                     </ul>
                   </section>
                 </article>

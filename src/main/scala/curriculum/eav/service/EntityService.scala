@@ -6,6 +6,9 @@ trait EntityService {
 
   private var entities = Map[String, Entity]()
 
+  /**
+   * Declare the entity in the underlying repository.
+   */
   def declare(entity: Entity) {
     entities += (entity.entityName -> entity)
   }

@@ -10,6 +10,10 @@ seq(WebPlugin.webSettings :_*)
 
 retrieveManaged := true // remove this once plugins are working or i understand their layout
 
+publishMavenStyle := true
+
+publishTo := Some(Resolver.file("Local", Path.userHome / "Projects" / "arnauld.github.com" / "maven2" asFile)(Patterns(true, Resolver.mavenStyleBasePattern)))
+
 libraryDependencies ++= Seq(
   // web
   "org.scalatra" %% "scalatra" % "2.0.0-SNAPSHOT",

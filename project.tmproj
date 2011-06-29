@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/main/webapp/resources/curriculum.css</string>
+	<string>../cv/src/main/webapp/css/resume.css</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -41,6 +41,36 @@
 	<integer>279</integer>
 	<key>metaData</key>
 	<dict>
+		<key>../cv/src/main/webapp/css/resume.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
+				<key>line</key>
+				<integer>2</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
+				<key>line</key>
+				<integer>2</integer>
+			</dict>
+		</dict>
 		<key>../cv/src/main/webapp/resume.html</key>
 		<dict>
 			<key>caret</key>
@@ -53,7 +83,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>318</integer>
+			<integer>0</integer>
 		</dict>
 		<key>../cv/src/main/webapp/ui-progress-bar/stylesheets/ui.progress-bar.css</key>
 		<dict>
@@ -158,14 +188,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>9</integer>
 				<key>line</key>
-				<integer>121</integer>
+				<integer>129</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>84</integer>
+			<integer>94</integer>
 		</dict>
 		<key>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</key>
 		<dict>
@@ -199,6 +229,7 @@
 	<key>openDocuments</key>
 	<array>
 		<string>../cv/src/main/webapp/resume.html</string>
+		<string>../cv/src/main/webapp/css/resume.css</string>
 		<string>build.sbt</string>
 		<string>src/main/webapp/resources/curriculum.css</string>
 		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</string>

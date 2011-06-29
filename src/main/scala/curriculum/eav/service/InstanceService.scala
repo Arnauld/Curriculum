@@ -1,27 +1,44 @@
 package curriculum.eav.service
 
 import curriculum.eav.Instance
-import javax.management.remote.rmi._RMIConnection_Stub
 
 trait InstanceService {
-  private var instanceByType = Map[String,List[Instance]]()
+  /**
+   * acts as simple repository
+   */
+  private var instanceByType = Map[String, List[Instance]]()
 
-  def register(instance:Instance) {
+  /**
+   * Register instance in the underlying repository
+   */
+  def register(instance: Instance) {
     val entityName = instance.entity.entityName
-    val registered = instance :: instanceByType.getOrElse(entityName, {Nil})
+    val registered = instance :: instanceByType.getOrElse(entityName, {
+      Nil
+    })
     instanceByType += (entityName -> registered)
   }
 
-  def findUniqueOrNone(example:Instance):Option[Instance] =
+  /**
+   * Query by example
+   *
+   */
+  def findUniqueOrNone(example: Instance): Option[Instance] =
     find(example) match {
       case elem :: Nil => Some(elem)
       case _ => None
     }
 
-  def find(example:Instance):List[Instance] =
+  /**
+   * Query by example
+   *
+   */
+  def find(example: Instance): List[Instance] =
     instanceByType.get(example.entity.entityName) match {
       case None => List()
-      case Some(list) => list.filter({_.isMatching(example)})
+      case Some(list) => list.filter({
+        _.isMatching(example)
+      })
     }
 
 }

@@ -3,7 +3,6 @@ package curriculum.eav.service
 import org.specs.Specification
 import org.slf4j.LoggerFactory
 import curriculum.domain.{CurriculumVitaeModels, CurriculumVitaeInstances}
-import com.sun.xml.internal.bind.v2.model.impl.DummyPropertyInfo
 import curriculum.eav.Instance
 
 class InstanceLoaderSpecs extends Specification {
@@ -13,16 +12,11 @@ class InstanceLoaderSpecs extends Specification {
   val entityService = new EntityService {}
   val modelReader = new ModelLoader {
     def getEntityService = entityService
-
-    def log = _logger
   }
   val instanceService = new InstanceService {}
   val instanceReader = new InstanceLoader {
     def getInstanceService = instanceService
-
     def getEntityService = entityService
-
-    def log = _logger
   }
 
 
@@ -30,7 +24,8 @@ class InstanceLoaderSpecs extends Specification {
     "be able to parse basic instance" in {
       modelReader.load(CurriculumVitaeModels.Models)
       val male = instanceReader.loadInstance(CurriculumVitaeInstances.GenreMale)
-      dumpInstance(0, male)
+      male.entity.entityName must_== "gender"
+      male("key") must_== Some("male")
     }
 
     "be able to parse more complex instance" in {
@@ -41,7 +36,9 @@ class InstanceLoaderSpecs extends Specification {
       instanceService.register(female)
 
       val instance = instanceReader.loadInstance(CurriculumVitaeInstances.Arnauld)
-      dumpInstance(0, instance)
+      //dumpInstance(0, instance)
+      val civility = instance("civility").get.asInstanceOf[Instance]
+      civility("first_name").get must_== "Arnauld"
     }
   }
 

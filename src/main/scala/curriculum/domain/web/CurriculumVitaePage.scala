@@ -84,9 +84,9 @@ class CurriculumVitaePage(val instance: Instance, val locale: Locale = Locale.FR
           dr match {
             case None => ""
             case Some(r: LocalDateRange) =>
-              val min = formatYearMonth(r.min)
-              if (r.max != null)
-                min + " - " + formatYearMonth(r.max)
+              val min = if (r.min.isDefined) formatYearMonth(r.min.get) else ""
+              if (r.max.isDefined)
+                min + " - " + formatYearMonth(r.max.get)
               else
                 "Depuis " + min
           }}

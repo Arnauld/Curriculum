@@ -2,25 +2,25 @@ package curriculum.eav.service
 
 import xml.{Node, NodeSeq}
 import curriculum.eav._
-import org.slf4j.Logger
 import curriculum.util.{HasHtmlDescription, Locales, HasLabel}
+import org.slf4j.{LoggerFactory}
 
 trait ModelLoader {
 
-  def log: Logger
+  private val logger = LoggerFactory.getLogger(classOf[ModelLoader])
 
   def getEntityService: EntityService
 
   val EntityTypeRef = """([^:]+):([^:]+)""".r
 
   def load(node: NodeSeq) {
-    log.info("Input entries: [{}] ", (node \ "_").map(_.label).mkString(", "))
+    logger.info("Input entries: [{}] ", (node \ "_").map(_.label).mkString(", "))
     val entities = (node \ "entities" \ "_")
-    log.info("About to load #{} entities", entities.size)
+    logger.info("About to load #{} entities", entities.size)
     entities.foreach({
       e: Node =>
         val name = (e \ "@name").text
-        log.info("Loading entity <{}>", name)
+        logger.info("Loading entity <{}>", name)
         val entity = Entity(name)
         (e \ "attributes" \ "attribute").foreach({
           a: Node =>
@@ -52,7 +52,7 @@ trait ModelLoader {
       case 0 => 1
       case _ => Integer.parseInt(upperBoundNode.text)
     }
-    log.info("Loading attribute <{}> of type <{}>", attName, attType)
+    logger.info("Loading attribute <{}> of type <{}>", attName, attType)
 
     val attribute = new Attribute(attName, attType, None, upperBound)
     loadLabels(a, attribute)
@@ -75,7 +75,7 @@ trait ModelLoader {
       case Some(n) => n.text == "html"
     })
 
-    log.info("Loading #{} html description", htmlDescriptions.size)
+    logger.info("Loading #{} html description", htmlDescriptions.size)
 
     (htmlDescriptions \ "description").foreach({
       l: Node =>
@@ -84,7 +84,7 @@ trait ModelLoader {
           case NodeSeq.Empty => scala.xml.Text(l.text.trim())
           case nodes => nodes
         }
-        log.debug("Loading description <{}>/<{}>", locale, value.text)
+        logger.debug("Loading description <{}>/<{}>", locale, value.text)
         dst.setHtmlDescription(Locales.toLocale(locale), value)
     })
   }
