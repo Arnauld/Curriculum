@@ -2,46 +2,32 @@ package curriculum.web
 
 import org.scalatra._
 import org.slf4j.LoggerFactory
-import curriculum.util.{Bytes, Strings}
 import page.Layout
-import curriculum.eav.service.{InstanceLoader, InstanceService, ModelLoader, EntityService}
 import curriculum.domain.{CurriculumVitaeInstances, CurriculumVitaeModels}
 import curriculum.domain.web.CurriculumVitaePage
 import xml.Node
 import curriculum.cluster.page.ClusterAdminPage
 import java.net.HttpURLConnection
-import java.util.Date
-import curriculum.cluster.{ClusterNode, ClusterService}
-import curriculum.task.TaskService
+import curriculum.util.{Bytes, Strings}
+import java.util.{Locale, Date}
+import curriculum.task.TaskMessage
+import curriculum.cluster.{ClusterMessage, ClusterNode}
 
-class CurriculumFilter extends ScalatraFilter with ResourceSupport {
+class CurriculumFilter extends ScalatraFilter with ResourceSupport with ServicesProvider {
 
   val log = LoggerFactory.getLogger(classOf[CurriculumFilter])
 
-  /*
-   * TODO ioc
-   */
-  val entityService = new EntityService {}
-  val modelReader = new ModelLoader {
-    def getEntityService = entityService
-  }
-  val instanceService = new InstanceService {}
-  val instanceReader = new InstanceLoader {
-    def getInstanceService = instanceService
-
-    def getEntityService = entityService
-  }
-  val taskService = new TaskService {}
-  val clusterService = new ClusterService {}
+  var locale = Locale.FRANCE
 
   /**
    * test
    */
   get("/test") {
     log.debug("Test called!")
-    <h1>Server up! {new Date().formatted("yyyy/MM/dd HH:mm:ss-SSS Z")}</h1>
+    <h1>Server up!
+      {new Date().formatted("yyyy/MM/dd HH:mm:ss-SSS Z")}
+    </h1>
   }
-
 
   /**
    * Start a node
@@ -50,12 +36,10 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport {
     log.debug("Cluster node start: {}", params)
     val nodeName = params("start-node-name")
     val nodePort = params("start-node-port")
-    val node = ClusterNode(nodeName, nodePort.toInt, Map[String,Any]())
+    val node = ClusterNode(nodeName, nodePort.toInt, Map[String, Any]())
     val task = taskService.spawn(clusterService.startNodeRunnable(node))
     response.setContentType("text/json")
-    """{
-       task_id:%d
-    }""".format(task.taskId)
+    TaskMessage.taskScheduled(task, ClusterMessage.nodeStarting(node)).toJSON(locale)
   }
 
   /**

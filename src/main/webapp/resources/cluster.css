@@ -12,7 +12,7 @@ body{
     position:absolute;
     top:400px;
     left:150px;
-    background:transparent url(bubble/title.png) no-repeat top left;
+    /*background:transparent url(bubble/title.png) no-repeat top left;*/
 }
 a.back{
     background:transparent url(bubble/back.png) no-repeat top left;
@@ -60,8 +60,11 @@ a.back{
 #logs .type-warning {
     background:transparent url(images/iconic/info_16x32_orange.png) no-repeat center center;
 }
-#logs .type-valid {
+#logs .type-sucess {
     background:transparent url(images/iconic/check_32x26_green.png) no-repeat center center;
+}
+#logs .type-task-scheduled {
+    background:transparent url(images/iconic/clock_32x32_green.png) no-repeat center center;
 }
 #logs .type-search-started {
     background:transparent url(images/iconic/magnifying_glass_32x32_blue.png) no-repeat center center;

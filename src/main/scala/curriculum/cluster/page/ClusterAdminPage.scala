@@ -26,13 +26,10 @@ class ClusterAdminPage extends HtmlPage {
           <h2>Cluster</h2>
           <ul>
             <li>
-              <a href="#">Start node</a>
+              <a href="#" id="start-node">Start node</a>
             </li>
             <li>
-              <a href="#">List nodes</a>
-            </li>
-            <li>
-              <a href="#">Privacy</a>
+              <a href="#" id="list-nodes">List nodes</a>
             </li>
           </ul>
         </div>
@@ -109,7 +106,7 @@ class ClusterAdminPage extends HtmlPage {
           </div>
         </div>
         <div class="message">
-          <div class="type type-valid">&nbsp;</div>
+          <div class="type type-sucess">&nbsp;</div>
           <div class="content">
             <b>Le noeud &lt;Dude&gt; est démarré sur le port 9000</b>.
           </div>

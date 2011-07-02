@@ -26,6 +26,53 @@ $(function() {
         },5000,'easeOutBack');
 
         $this.find('a:first,h2').removeClass('active');
-    }
-);
+    });
+
+    $("#start-node").click(function () {
+        cluster.post("/cluster/start", {
+                "start-node-name":"McCallum",
+                "start-node-port":9001
+         });
+    });
 });
+
+var cluster = {
+    logMaxSize: 10,
+
+    log: function(message) {
+        var $msg = cluster.formatMessage(message);
+        $msg.hide();
+
+        var messages = $("#logs div.message");
+        // remove the tops elements
+        if(messages.length>=cluster.logMaxSize) {
+            var overflow = messages.slice(0, messages.length-cluster.logMaxSize+1);
+            overflow.fadeOut(300, function () {
+                $(this).remove();
+            });
+        }
+        $("#logs").append($msg);
+        $msg.fadeIn(300);
+    },
+
+    post: function(_url,_data) {
+        $.ajax({
+          type: 'POST',
+          url: _url,
+          data: _data,
+          success: function (data) {
+            cluster.log(data);
+          },
+          dataType: "json"
+        });
+    },
+
+    formatMessage: function(json) {
+        var $root = $("<div/>").addClass("message");
+        var $type = $("<div/>").addClass("type").addClass(json.type).html("&nbsp;");
+        var $cont = $("<div/>").addClass("content").html(json.message);
+        $root.append($type).append($cont);
+        return $root;
+    }
+};
+
