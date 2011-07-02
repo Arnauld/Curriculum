@@ -12,8 +12,8 @@ class CurriculumVitaePage(val instance: Instance, val locale: Locale = Locale.FR
 
   val log = LoggerFactory.getLogger(classOf[CurriculumVitaePage])
 
-  declareStylesheets("resources/ui-progress-bar/stylesheets/ui.progress-bar.css")
-  declareScripts("resources/ui-progress-bar/javascripts/progress.js")
+  declareStylesheets("/resources/ui-progress-bar/stylesheets/ui.progress-bar.css")
+  declareScripts("/resources/ui-progress-bar/javascripts/progress.js")
 
   bodyContent =
     renderInstance(instance("civility"), renderCivility(_)) ++

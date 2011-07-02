@@ -1,0 +1,79 @@
+package curriculum.task
+
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.{TimeUnit, Executors}
+import curriculum.util.{ProgressMonitor, RunnableWithProgress, DaemonThreadFactory}
+
+trait TaskService {
+  private val executor = Executors.newFixedThreadPool(4, new DaemonThreadFactory("TaskService-%d"))
+  private val victor = Executors.newScheduledThreadPool(1)
+
+  private var jobs:List[InternalTask] = Nil
+
+  private val idGen = new AtomicLong()
+
+  def start () {
+    victor.scheduleAtFixedRate(new Runnable {
+      def run() {
+        markAndSweep()
+      }
+    }, 1L, 1L, TimeUnit.MINUTES)
+  }
+
+  private[task] def markAndSweep() {
+    // keep finished task for 5mins, and let's mark the older ones
+    val threshold = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5)
+
+    //
+    jobs.foreach({job => job.finishedAt match {
+      case None => // nothing to do
+      case Some(ts) =>
+        if(ts<threshold)
+          job.marked = true
+    }})
+
+    // now the sync' part: sweep
+    synchronized {
+      jobs = jobs.filterNot(_.marked)
+    }
+  }
+
+  def spawn(r: RunnableWithProgress): Task = {
+    val job = new InternalTask(idGen.incrementAndGet(), r)
+    executor.submit(job)
+    synchronized {
+      jobs = job::jobs
+    }
+    job
+  }
+
+  class InternalTask(id: Long, r: RunnableWithProgress) extends SimpleTask(id) with ProgressMonitor with Runnable {
+    private[task] var marked = false
+
+    override def beginTask(name: String, amount: Int) {
+      progressUpperBound = amount
+    }
+
+    override def worked(amount: Int) {
+      workDone(amount)
+    }
+
+    override def done() {
+      status = TaskStatus.Done
+    }
+
+    override def subMonitor = new ProgressMonitor {}
+
+    def run() {
+      try {
+        taskStart()
+        r.run(this)
+        done()
+      }
+      finally {
+        taskFinished()
+      }
+    }
+  }
+
+}

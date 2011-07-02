@@ -4,22 +4,15 @@ import java.util.concurrent.ConcurrentHashMap
 import java.net.{HttpURLConnection, URL}
 import curriculum.util.{Bytes, URLResource}
 import org.scalatra.ScalatraKernel
-import java.text.SimpleDateFormat
-import java.util.Date
+import org.slf4j.LoggerFactory
 
 /**
  * Simple trait to manage static webapp resources with a really simple and basic cache management.
  */
 trait ResourceSupport extends ScalatraKernel {
-  self: {
-    def log: org.slf4j.Logger
-  } =>
+  private val log = LoggerFactory.getLogger(classOf[ResourceSupport])
 
   private val resourceCache = new ConcurrentHashMap[String, URLResource]
-
-  private def formatTS(ts: Long) =
-  // note: dateformat is not thread safe, thus to keep it simple one create a new one each time
-    new SimpleDateFormat("yyyy/MM/dd HH:mm:ss-SSS").format(new Date(ts))
 
   /**
    *

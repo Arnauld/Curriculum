@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>../cv/src/main/webapp/css/resume.css</string>
+	<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.css</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -17,8 +17,6 @@
 			<string>../cv/src/main/webapp</string>
 		</dict>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>curriculum</string>
 			<key>regexFolderFilter</key>
@@ -27,14 +25,22 @@
 			<string></string>
 		</dict>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>technbolts-smog</string>
 			<key>regexFolderFilter</key>
 			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
 			<key>sourceDirectory</key>
 			<string>../technbolts-smog</string>
+		</dict>
+		<dict>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>we-recruit</string>
+			<key>regexFolderFilter</key>
+			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
+			<key>sourceDirectory</key>
+			<string>../we-recruit</string>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -55,7 +61,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>19</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -169,6 +175,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>26</integer>
+				<key>line</key>
+				<integer>34</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>5</integer>
+		</dict>
 		<key>build.sbt</key>
 		<dict>
 			<key>caret</key>
@@ -182,6 +202,36 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>src/main/webapp/WEB-INF/web.xml</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>18</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>1</integer>
+				<key>line</key>
+				<integer>6</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>18</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
 		</dict>
 		<key>src/main/webapp/resources/curriculum.css</key>
 		<dict>
@@ -216,14 +266,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>19</integer>
+				<integer>20</integer>
 				<key>line</key>
-				<integer>90</integer>
+				<integer>95</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>60</integer>
+			<integer>65</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -234,6 +284,8 @@
 		<string>src/main/webapp/resources/curriculum.css</string>
 		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</string>
 		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.progress-bar.css</string>
+		<string>src/main/webapp/WEB-INF/web.xml</string>
+		<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.css</string>
 		<string>../cv/src/main/webapp/ui-progress-bar/stylesheets/ui.progress-bar.css</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
