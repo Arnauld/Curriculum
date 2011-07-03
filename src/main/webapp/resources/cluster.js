@@ -34,10 +34,15 @@ $(function() {
                 "start-node-port":9001
          });
     });
+
+    //
+    cluster.waitForMessage();
 });
 
 var cluster = {
     logMaxSize: 10,
+
+    lastMessage: 0,
 
     log: function(message) {
         var $msg = cluster.formatMessage(message);
@@ -61,18 +66,68 @@ var cluster = {
           url: _url,
           data: _data,
           success: function (data) {
-            cluster.log(data);
+            // no-op: message will be queried by the auto-polling scheduled
           },
           dataType: "json"
         });
     },
 
+    defaultMsg: {
+        "id":"-1",
+        "type":"type-unknown",
+        "message":"?"
+    },
+
     formatMessage: function(json) {
-        var $root = $("<div/>").addClass("message");
-        var $type = $("<div/>").addClass("type").addClass(json.type).html("&nbsp;");
-        var $cont = $("<div/>").addClass("content").html(json.message);
+        var msg = $.extend({}, cluster.defaultMsg, json);
+        var $root = $("<div/>").addClass("message").attr("message_id", msg.id);
+        var $type = $("<div/>").addClass("type").addClass(msg.type).html("&nbsp;");
+        var $cont = $("<div/>").addClass("content").html(msg.message);
         $root.append($type).append($cont);
         return $root;
+    },
+
+    lastCallInError: false,
+
+    waitForMessage: function () {
+        $.ajax({
+            type: "GET",
+            url: "/msg/list/"+cluster.lastMessage,
+            data: {},
+
+            async: true, /* If set to non-async, browser shows page as "Loading.."*/
+            cache: false,
+            timeout:50000, /* Timeout in ms */
+
+            success: function(data){ /* called when request to barge.php completes */
+                cluster.lastCallInError = false;
+                $.each(data, function(key, val) {
+                    alert("Received "+key+"/"+val+"!");
+                    cluster.lastMessage = val.id;
+                    cluster.log(val); /* Add response to a .msg div (with the "new" class)*/
+                });
+                setTimeout(
+                    'cluster.waitForMessage()', /* Request next message */
+                    1000 /* ..after 1 seconds */
+                );
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                if(cluster.lastCallInError) {
+                    // only log is the previous was not an error
+                }
+                else {
+                    cluster.lastCallInError = true;
+                    var message = textStatus
+                    if(message=="error")
+                        message = "Server probably down";
+                    cluster.log({"type":"type-error", "message":message + " (" + errorThrown + ")"});
+                }
+                setTimeout(
+                    'cluster.waitForMessage()', /* Try again after.. */
+                    "15000"); /* milliseconds (15seconds) */
+            },
+        });
     }
 };
+
 

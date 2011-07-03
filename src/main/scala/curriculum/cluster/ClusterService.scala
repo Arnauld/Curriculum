@@ -2,7 +2,7 @@ package curriculum.cluster
 
 import netty.ClusterNodeNetty
 import org.slf4j.LoggerFactory
-import curriculum.util.{ProgressMonitor, RunnableWithProgress}
+import curriculum.util.{MessageQueue, ProgressMonitor, RunnableWithProgress}
 
 trait ClusterService {
   private val log = LoggerFactory.getLogger(classOf[ClusterService])
@@ -23,6 +23,8 @@ trait ClusterService {
 
   private def startNode(node: ClusterNode, monitor: ProgressMonitor) {
     monitor.beginTask("node_start", 4)
+
+    MessageQueue.Local.publish(ClusterMessage.nodeStarting(node))
 
     monitor.subTask("check_node_alread_exists")
     val n = synchronized {

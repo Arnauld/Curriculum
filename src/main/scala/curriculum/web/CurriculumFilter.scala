@@ -30,6 +30,18 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
   }
 
   /**
+   *
+   */
+  get("/msg/list/*") {
+    val what = params("splat")
+    log.debug("Message list queried: {}, {}", params, what)
+    val lowerBound = what.toLong
+    val msgs = messageQueue.listMessages(lowerBound).sortWith(_.messageId < _.messageId).map(_.toJSON(locale))
+    contentType = "text/json"
+    msgs.mkString("[", ",", "]")
+  }
+
+  /**
    * Start a node
    */
   post("/cluster/start") {
@@ -38,8 +50,8 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     val nodePort = params("start-node-port")
     val node = ClusterNode(nodeName, nodePort.toInt, Map[String, Any]())
     val task = taskService.spawn(clusterService.startNodeRunnable(node))
-    response.setContentType("text/json")
-    TaskMessage.taskScheduled(task, ClusterMessage.nodeStarting(node)).toJSON(locale)
+    messageQueue.publish(TaskMessage.taskScheduled(task, ClusterMessage.nodeStarting(node)))
+    response.setStatus(200)
   }
 
   /**

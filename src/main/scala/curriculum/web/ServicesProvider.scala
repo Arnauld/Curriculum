@@ -1,17 +1,9 @@
 package curriculum.web
 
-import javax.servlet.Filter
 import curriculum.eav.service.{InstanceLoader, InstanceService, ModelLoader, EntityService}
 import curriculum.task.TaskService
 import curriculum.cluster.ClusterService
-
-/**
- * Created by IntelliJ IDEA.
- * User: arnauld
- * Date: 02/07/11
- * Time: 23:44
- * To change this template use File | Settings | File Templates.
- */
+import curriculum.util.MessageQueue
 
 trait ServicesProvider {
   /*
@@ -29,4 +21,6 @@ trait ServicesProvider {
   }
   val taskService = new TaskService {}
   val clusterService = new ClusterService {}
+
+  val messageQueue = new MessageQueue {}
 }

@@ -57,12 +57,23 @@ a.back{
     height:32px;
     margin:2px;
 }
+
+/*
+ * Message Type Icons
+ */
 #logs .type-warning {
     background:transparent url(images/iconic/info_16x32_orange.png) no-repeat center center;
 }
-#logs .type-sucess {
+#logs .type-success {
     background:transparent url(images/iconic/check_32x26_green.png) no-repeat center center;
 }
+#logs .type-error {
+    background:transparent url(images/iconic/x_alt_32x32_red.png) no-repeat center center;
+}
+#logs .type-unknown {
+    background:transparent url(images/iconic/lightbulb_20x32_orange.png) no-repeat center center;
+}
+
 #logs .type-task-scheduled {
     background:transparent url(images/iconic/clock_32x32_green.png) no-repeat center center;
 }
@@ -71,4 +82,8 @@ a.back{
 }
 #logs .type-search-done {
     background:transparent url(images/iconic/lightbulb_20x32_blue.png) no-repeat center center;
+}
+
+#logs .type-node-running {
+    background:transparent url(images/iconic/cloud_32x20_blue.png) no-repeat center center;
 }

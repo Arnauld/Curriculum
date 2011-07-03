@@ -7,8 +7,8 @@ import java.util.concurrent.Executors
 import org.jboss.netty.channel.{Channels, ChannelPipeline, ChannelPipelineFactory, Channel}
 import org.jboss.netty.handler.codec.http.{HttpContentCompressor, HttpResponseEncoder, HttpRequestDecoder}
 import java.net.{InetSocketAddress, URL}
-import curriculum.cluster.ClusterNode
-import curriculum.util.ProgressMonitor
+import curriculum.util.{MessageQueue, ProgressMonitor}
+import curriculum.cluster.{ClusterMessage, ClusterNode}
 
 object ClusterNodeNetty {
 }
@@ -63,10 +63,12 @@ case class ClusterNodeNetty(node:ClusterNode) {
           monitor.subTask("port-binding")
           // Bind and start to accept incoming connections.
           channel = Some(bootstrap.bind(new InetSocketAddress(port)))
+          MessageQueue.Local.publish(ClusterMessage.nodeStarted(node))
           log.info("Node <{}> started on port {}", name, port)
 
         case Some(s) =>
           monitor.worked(3)
+          MessageQueue.Local.publish(ClusterMessage.nodeAlreadyStarted(node))
           log.info("Node <{}> already started on port {}", name, port)
       }
     }
