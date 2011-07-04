@@ -55,7 +55,16 @@ Currently the page rendering is based on raw html (manipulated as xml). This has
 * understand how to manipulate XML through scala: read, write, xpath, merge...
 * since XML support is builtin in scala. A lot of data navigation issues is detected early at compilation.
 
+## Roadmap
 
+* Add message display on a per session basis: "i trigger the search, i'm the only one that see its life events"
+* Replace job/dispatch by an event bus, e.g. based on ActiveMQ/RabbitMQ
+* Add instance rendering based on customized/user defined scaml templates
+* Add session auth.
+* Add persistence behavior
+* Add scafold on instance on a per entity basis
+* Add entity designer
+* Replace object serialization by Protocol Buffer
 
 Misc
 ==============================================

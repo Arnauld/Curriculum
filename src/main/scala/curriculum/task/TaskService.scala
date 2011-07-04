@@ -2,13 +2,14 @@ package curriculum.task
 
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{TimeUnit, Executors}
-import curriculum.util.{ProgressMonitor, RunnableWithProgress, DaemonThreadFactory}
+import curriculum.message.MessageQueue
+import curriculum.util.{LocaleAware, ProgressMonitor, RunnableWithProgress, DaemonThreadFactory}
 
 trait TaskService {
   private val executor = Executors.newFixedThreadPool(4, new DaemonThreadFactory("TaskService-%d"))
   private val victor = Executors.newScheduledThreadPool(1)
 
-  private var jobs:List[InternalTask] = Nil
+  private var tasks:List[InternalTask] = Nil
 
   private val idGen = new AtomicLong()
 
@@ -25,7 +26,7 @@ trait TaskService {
     val threshold = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5)
 
     //
-    jobs.foreach({job => job.finishedAt match {
+    tasks.foreach({job => job.finishedAt match {
       case None => // nothing to do
       case Some(ts) =>
         if(ts<threshold)
@@ -34,17 +35,18 @@ trait TaskService {
 
     // now the sync' part: sweep
     synchronized {
-      jobs = jobs.filterNot(_.marked)
+      tasks = tasks.filterNot(_.marked)
     }
   }
 
-  def spawn(r: RunnableWithProgress): Task = {
-    val job = new InternalTask(idGen.incrementAndGet(), r)
-    executor.submit(job)
+  def spawn(r: RunnableWithProgress, details:LocaleAware): Task = {
+    val task = new InternalTask(idGen.incrementAndGet(), r)
+    MessageQueue.Local.publish(TaskMessage.taskScheduled(task, details))
+    executor.submit(task)
     synchronized {
-      jobs = job::jobs
+      tasks = task::tasks
     }
-    job
+    task
   }
 
   class InternalTask(id: Long, r: RunnableWithProgress) extends SimpleTask(id) with ProgressMonitor with Runnable {

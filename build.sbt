@@ -16,6 +16,8 @@ publishMavenStyle := true
 
 publishTo := Some(Resolver.file("Local", Path.userHome / "Projects" / "arnauld.github.com" / "maven2" asFile)(Patterns(true, Resolver.mavenStyleBasePattern)))
 
+javaOptions in (run) += "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
+
 libraryDependencies ++= Seq(
   // web
   "org.scalatra" %% "scalatra" % "2.0.0-SNAPSHOT",
@@ -23,6 +25,8 @@ libraryDependencies ++= Seq(
   "org.scalatra" %% "scalatra-scalate" % "2.0.0-SNAPSHOT",
   // netty
   "org.jboss.netty" % "netty" % "3.2.4.Final",
+  // http client for node com'
+  "commons-httpclient" % "commons-httpclient" % "3.1",
   // jetty
   "org.eclipse.jetty" % "jetty-server" % "7.4.2.v20110526" % "jetty;provided",
   "org.eclipse.jetty" % "jetty-webapp" % "7.4.2.v20110526" % "jetty;provided",

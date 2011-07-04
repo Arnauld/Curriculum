@@ -3,15 +3,17 @@ package curriculum.web
 import org.scalatra._
 import org.slf4j.LoggerFactory
 import page.Layout
-import curriculum.domain.{CurriculumVitaeInstances, CurriculumVitaeModels}
+import curriculum.domain.CurriculumVitaeInstances
 import curriculum.domain.web.CurriculumVitaePage
-import xml.Node
 import curriculum.cluster.page.ClusterAdminPage
 import java.net.HttpURLConnection
-import curriculum.util.{Bytes, Strings}
 import java.util.{Locale, Date}
-import curriculum.task.TaskMessage
 import curriculum.cluster.{ClusterMessage, ClusterNode}
+import curriculum.message.MessageQueue
+import curriculum.util.{SearchParameters, Bytes, Strings}
+import curriculum.eav.Instance
+import curriculum.eav.service.SearchMessage
+import org.apache.commons.httpclient.HttpStatus
 
 class CurriculumFilter extends ScalatraFilter with ResourceSupport with ServicesProvider {
 
@@ -36,9 +38,58 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     val what = params("splat")
     log.debug("Message list queried: {}, {}", params, what)
     val lowerBound = what.toLong
-    val msgs = messageQueue.listMessages(lowerBound).sortWith(_.messageId < _.messageId).map(_.toJSON(locale))
+    var msgs = MessageQueue.Local.listMessages(lowerBound)
+    var retry = 1
+    while(msgs.isEmpty && retry<3) {
+      retry = retry+1
+      Thread.sleep(500)
+      msgs = MessageQueue.Local.listMessages(lowerBound, 1)
+    }
+    val json = msgs.map(_.toJSON(locale))
     contentType = "text/json"
-    msgs.mkString("[", ",", "]")
+    json.mkString("[", ",", "]")
+  }
+
+  /**
+   * our clustered search engine
+   */
+  get("/search") {
+    try {
+      log.debug("Search called")
+      readInstanceFromParams match {
+        case Some(inst) =>
+          val keywords = params.get("keywords").getOrElse("").split(",")
+          val asyncResult = searchService.searchBySimilitude(inst, keywords, new SearchParameters {})
+          response.setStatus(HttpStatus.SC_ACCEPTED)
+          ""
+        case None =>
+          MessageQueue.Local.publish(SearchMessage.noSimilarInstanceDefined())
+          response.setStatus(HttpStatus.SC_PRECONDITION_FAILED)
+          ""
+      }
+    } catch {
+      case e: Throwable =>
+        log.error("Oooops", e)
+        throw e
+    }
+  }
+
+  def readInstanceFromParams: Option[Instance] = {
+    entityService().getEntity(params("entity").asInstanceOf[String]) match {
+      case None =>
+        None
+      case Some(e) =>
+        val inst = e.newInstance
+        e.getAttributes.values.foreach({
+          a =>
+            params.get("instance." + a.attributeName) match {
+              case None => // no value for attributes
+              case Some(v) =>
+                inst.setAttributeValue(a.attributeName, v)
+            }
+        })
+        Some(inst)
+    }
   }
 
   /**
@@ -49,9 +100,11 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     val nodeName = params("start-node-name")
     val nodePort = params("start-node-port")
     val node = ClusterNode(nodeName, nodePort.toInt, Map[String, Any]())
-    val task = taskService.spawn(clusterService.startNodeRunnable(node))
-    messageQueue.publish(TaskMessage.taskScheduled(task, ClusterMessage.nodeStarting(node)))
+    val task = taskService.spawn(
+      clusterService.startNodeRunnable(node),
+      ClusterMessage.nodeStarting(node).toLocaleAware)
     response.setStatus(200)
+    """{ "task_id":""" + task.taskId + "}";
   }
 
   /**
@@ -67,16 +120,7 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
    * cv ;)
    */
   get("/arnauld") {
-    modelReader.load(CurriculumVitaeModels.Models)
-
-    import CurriculumVitaeInstances._
-    List(GenreMale, GenreFemale).foreach({
-      n: Node =>
-        val instance = instanceReader.loadInstance(n)
-        instanceService.register(instance)
-    })
-
-    val instance = instanceReader.loadInstance(Arnauld)
+    val instance = instanceReader.loadInstance(CurriculumVitaeInstances.Arnauld)
 
     /*
      * generate page

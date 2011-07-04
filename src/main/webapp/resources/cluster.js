@@ -29,11 +29,18 @@ $(function() {
     });
 
     $("#start-node").click(function () {
-        cluster.post("/cluster/start", {
+        cluster.send('POST', "/cluster/start", {
                 "start-node-name":"McCallum",
                 "start-node-port":9001
          });
     });
+    
+    $("#search").click(function () {
+        cluster.send('GET', "/search", {
+                "entity":"curriculum_vitae",
+                "instance.potential": "100%"
+         });
+    })
 
     //
     cluster.waitForMessage();
@@ -57,12 +64,18 @@ var cluster = {
             });
         }
         $("#logs").append($msg);
+        $msg.hover(function () {
+            $(this).addClass("hover");
+        },
+        function() {
+            $(this).removeClass("hover"");
+        })
         $msg.fadeIn(300);
     },
 
-    post: function(_url,_data) {
+    send: function(_method, _url,_data) {
         $.ajax({
-          type: 'POST',
+          type: _method,
           url: _url,
           data: _data,
           success: function (data) {
@@ -70,6 +83,11 @@ var cluster = {
           },
           dataType: "json"
         });
+
+        if(cluster.scheduled!=null)
+            clearTimeout(cluster.scheduled);
+        cluster.numberOfCallsWithoutMessage = 0;//prevent wait
+        cluster.waitForMessage();
     },
 
     defaultMsg: {
@@ -89,6 +107,14 @@ var cluster = {
 
     lastCallInError: false,
 
+    numberOfCallsWithoutMessage: 0,
+
+    scheduled: null,
+
+    /*
+     * Probably not the most efficient way to do this
+     * TODO: replace by long polling
+     */
     waitForMessage: function () {
         $.ajax({
             type: "GET",
@@ -99,16 +125,30 @@ var cluster = {
             cache: false,
             timeout:50000, /* Timeout in ms */
 
-            success: function(data){ /* called when request to barge.php completes */
+            success: function(data) {
+                var retrieved = 0;
                 cluster.lastCallInError = false;
                 $.each(data, function(key, val) {
-                    alert("Received "+key+"/"+val+"!");
+                    retrieved = retrieved + 1;
                     cluster.lastMessage = val.id;
-                    cluster.log(val); /* Add response to a .msg div (with the "new" class)*/
+                    cluster.log(val);
                 });
-                setTimeout(
-                    'cluster.waitForMessage()', /* Request next message */
-                    1000 /* ..after 1 seconds */
+
+                // poll less frequently if there are no messages
+                var nextTry = 1000;
+                if(retrieved>0) {
+                    cluster.numberOfCallsWithoutMessage = 0;
+                }
+                else {
+                    cluster.numberOfCallsWithoutMessage = cluster.numberOfCallsWithoutMessage + 1;
+                    nextTry = 1000 * cluster.numberOfCallsWithoutMessage;
+                    if(nextTry>5000)
+                        nextTry = 5000;
+                }
+
+                cluster.scheduled = setTimeout(
+                    'cluster.waitForMessage()', /* Request next messages */
+                    nextTry /* ..after nextTry milliseconds */
                 );
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

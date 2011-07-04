@@ -6,7 +6,7 @@ import curriculum.web.CurriculumFilter
 import org.slf4j.LoggerFactory
 import java.net.URL
 import org.eclipse.jetty.webapp.WebAppContext
-import org.eclipse.jetty.util.resource.{Resource}
+import org.eclipse.jetty.util.resource.Resource
 import org.eclipse.jetty.server.nio.SelectChannelConnector
 import curriculum.cluster.ClusterNode
 import java.lang.IllegalArgumentException

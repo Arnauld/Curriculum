@@ -2,6 +2,7 @@ package curriculum.util
 
 import java.net.URL
 import org.apache.commons.io.IOUtils
+import java.io.{DataOutputStream, OutputStream}
 
 object Bytes {
   val EMPTY = Array[Byte]()
@@ -15,4 +16,5 @@ object Bytes {
       IOUtils.closeQuietly(input)
     }
   }
+
 }

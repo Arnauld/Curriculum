@@ -1,9 +1,8 @@
-package curriculum.util
+package curriculum.message
 
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.{TimeUnit, Executors}
-import org.slf4j.LoggerFactory
+import curriculum.util.LocaleAware
 
 object Message {
 
@@ -17,7 +16,9 @@ object Message {
 
     case object Error extends Type("type-error")
 
-    case object Success extends Type("type-sucess")
+    case object Success extends Type("type-success")
+
+    case object Unknown extends Type("type-unknown")
 
   }
 
@@ -35,28 +36,35 @@ object Message {
   trait Code {
     def format(locale: Locale, args: Any*): String = rawMessage(locale).format(args: _*)
 
-    def rawMessage(locale: Locale): String
+    def rawMessage(locale: Locale = Locale.getDefault): String
   }
 
   object Code {
     def apply(content: String): Code = new Code {
       def rawMessage(locale: Locale) = content
+
+      override def toString = content
     }
 
     def apply(content: Map[Locale, String], fallback: String): Code = new Code {
       def rawMessage(locale: Locale) = content.get(locale).getOrElse(fallback)
+
+      override def toString = fallback
     }
   }
 
-  val idGen = new AtomicLong()
+  def localeAware( messageCode: Message.Code, args: Any*) = new LocaleAware {
+    def adaptTo(locale: Locale) = messageCode.format(locale, args:_*)
+  }
 }
-
 
 case class Message(messageType: Message.Type, messageCode: Message.Code, args: Any*) extends LocaleAware {
 
+  def toLocaleAware = Message.localeAware(messageCode, args:_*)
+
   var marked = false
 
-  val messageId = Message.idGen.incrementAndGet()
+  private[message] var messageId = -1L
 
   val createdAt = System.currentTimeMillis()
 
@@ -73,62 +81,4 @@ case class Message(messageType: Message.Type, messageCode: Message.Code, args: A
   // ok... not the cleanest way to do so, but at least simple enough to continue for now...
   def toJSON(locale: Locale) =
     "{ \"id\":\"" + messageId + "\", \"type\":\"" + messageType.code + "\", \"message\":\"" + adaptTo(locale) + "\" }"
-}
-
-object MessageQueue {
-  var Local = new MessageQueue {}
-}
-
-trait MessageQueue {
-
-  private val log = LoggerFactory.getLogger(classOf[MessageQueue])
-
-  private val victor = Executors.newScheduledThreadPool(1)
-
-  private var messages: List[Message] = Nil
-
-  def listMessages(lastMsg: Long, limit:Int = 10) = {
-    log.debug("Querying message with Id greater than {}", lastMsg)
-    val selected = messages.filter(_.messageId > lastMsg)
-    val limited =
-      if (selected.size > limit)
-        selected.slice(0, limit)
-      else
-        selected
-    log.debug("Querying message with Id greater than {}, found #{}", lastMsg, limited.size)
-    limited
-  }
-
-  def publish(msg: Message) {
-    log.debug("Publishing message {}: {}", msg.messageId, msg)
-    synchronized {
-      messages = msg :: messages
-    }
-  }
-
-  def start() {
-    victor.scheduleAtFixedRate(new Runnable {
-      def run() {
-        markAndSweep()
-      }
-    }, 1L, 1L, TimeUnit.MINUTES)
-  }
-
-  private def markAndSweep() {
-    // keep message for 5mins, and let's mark the older ones
-    val threshold = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5)
-
-    //
-    messages.foreach({
-      m =>
-        if (m.createdAt < threshold)
-          m.marked = true
-    })
-
-    // now the sync' part: sweep
-    synchronized {
-      messages = messages.filterNot(_.marked)
-    }
-  }
-
 }

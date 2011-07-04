@@ -1,6 +1,6 @@
 package curriculum.task
 
-import curriculum.util.Message
+import curriculum.message.Message
 
 object TaskMessage {
   object Type {

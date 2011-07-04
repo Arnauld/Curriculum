@@ -51,6 +51,9 @@ a.back{
     font-size: 14px;
     line-height: 16px;
 }
+#logs .hover {
+    background-color: rgba(124, 189, 225, .7);
+}
 #logs .type {
     float:left;
     width: 37px;
@@ -61,29 +64,65 @@ a.back{
 /*
  * Message Type Icons
  */
+
+/* ~~~ common ~~~ */
+
 #logs .type-warning {
     background:transparent url(images/iconic/info_16x32_orange.png) no-repeat center center;
 }
+
 #logs .type-success {
     background:transparent url(images/iconic/check_32x26_green.png) no-repeat center center;
 }
+
 #logs .type-error {
     background:transparent url(images/iconic/x_alt_32x32_red.png) no-repeat center center;
 }
+
 #logs .type-unknown {
     background:transparent url(images/iconic/lightbulb_20x32_orange.png) no-repeat center center;
 }
 
+/* ~~~ task ~~~ */
+
 #logs .type-task-scheduled {
     background:transparent url(images/iconic/clock_32x32_green.png) no-repeat center center;
 }
+
+/* ~~~ search ~~~ */
+
 #logs .type-search-started {
     background:transparent url(images/iconic/magnifying_glass_32x32_blue.png) no-repeat center center;
 }
 #logs .type-search-done {
     background:transparent url(images/iconic/lightbulb_20x32_blue.png) no-repeat center center;
 }
+#logs .type-search-by-similitude {
+    background:transparent url(images/iconic/magnifying_glass_32x32_blue.png) no-repeat center center;
+}
+#logs .type-no-similar-instance-defined {
+    background:transparent url(images/iconic/magnifying_glass_32x32_orange.png) no-repeat center center;
+}
+
+/* ~~~ node ~~~ */
+
+#logs .type-node-start-error {
+    background:transparent url(images/iconic/cloud_32x20_orange.png) no-repeat center center;
+}
+#logs .type-node-already-started {
+    background:transparent url(images/iconic/cloud_32x20_blue.png) no-repeat center center;
+}
+#logs .type-no-node-running {
+    background:transparent url(images/iconic/cloud_32x20_orange.png) no-repeat center center;
+}
 
 #logs .type-node-running {
     background:transparent url(images/iconic/cloud_32x20_blue.png) no-repeat center center;
 }
+#logs .type-node-starting {
+    background:transparent url(images/iconic/reload_24x28_blue.png) no-repeat center center;
+}
+#logs .type-node-started {
+    background:transparent url(images/iconic/cloud_32x20_green.png) no-repeat center center;
+}
+

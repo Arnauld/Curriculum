@@ -2,8 +2,7 @@ package curriculum.cluster.page
 
 import curriculum.web.page.HtmlPage
 import org.slf4j.LoggerFactory
-
-class ClusterAdminPage extends HtmlPage {
+class ClusterAdminPage() extends HtmlPage {
 
   val log = LoggerFactory.getLogger(classOf[ClusterAdminPage])
 
@@ -16,7 +15,7 @@ class ClusterAdminPage extends HtmlPage {
 
   bodyContent =
     <div id="content">
-      <a class="back" href="http://tympanus.net/codrops/2010/04/29/awesome-bubble-navigation-with-jquery"></a>
+      <a class="back" href="/search"></a>
       <div class="title"></div>
 
       <div class="navigation" id="nav">
@@ -55,17 +54,11 @@ class ClusterAdminPage extends HtmlPage {
           <h2>Shop</h2>
           <ul>
             <li>
-              <a href="#">Catalogue</a>
-            </li>
-            <li>
-              <a href="#">Orders</a>
-            </li>
-            <li>
-              <a href="#">Offers</a>
+              <a href="#" id="search">Search</a>
             </li>
           </ul>
         </div>
-        <div class="item camera">
+        <!-- div class="item camera">
             <img src="/resources/bubble/images/bg_camera.png" alt=" " width="199" height="199" class="circle"/>
           <a href="#" class="icon"></a>
           <h2>Photos</h2>
@@ -80,26 +73,20 @@ class ClusterAdminPage extends HtmlPage {
               <a href="#">Submit</a>
             </li>
           </ul>
-        </div>
+        </div-->
         <div class="item fav">
             <img src="/resources/bubble/images/bg_fav.png" alt=" " width="199" height="199" class="circle"/>
           <a href="#" class="icon"></a>
           <h2>Love</h2>
           <ul>
             <li>
-              <a href="#">Social</a>
-            </li>
-            <li>
-              <a href="#">Support</a>
-            </li>
-            <li>
-              <a href="#">Comments</a>
+              <a href="https://github.com/Arnauld/Curriculum" target="_blank">Clone me on github</a>
             </li>
           </ul>
         </div>
       </div>
       <section id="logs">
-        <div class="message">
+        <!--div class="message">
           <div class="type type-warning">&nbsp;</div>
           <div class="content">
             <b>Aucun noeud disponible</b>. En tant qu'administrateur vous devriez en allumer un!
@@ -122,10 +109,9 @@ class ClusterAdminPage extends HtmlPage {
           <div class="content">
             <b>Recherche effectuée: 1 résultat</b>.
           </div>
-        </div>
+        </div-->
       </section>
     </div>
-
 
   val old =
     <div id="clusters">

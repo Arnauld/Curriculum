@@ -3,12 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.css</string>
+	<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.html</string>
 	<key>documents</key>
 	<array>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>webapp</string>
 			<key>regexFolderFilter</key>
@@ -17,6 +15,8 @@
 			<string>../cv/src/main/webapp</string>
 		</dict>
 		<dict>
+			<key>expanded</key>
+			<true/>
 			<key>name</key>
 			<string>curriculum</string>
 			<key>regexFolderFilter</key>
@@ -33,8 +33,6 @@
 			<string>../technbolts-smog</string>
 		</dict>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>we-recruit</string>
 			<key>regexFolderFilter</key>
@@ -42,69 +40,19 @@
 			<key>sourceDirectory</key>
 			<string>../we-recruit</string>
 		</dict>
+		<dict>
+			<key>name</key>
+			<string>netty-3.2.4.Final</string>
+			<key>regexFolderFilter</key>
+			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
+			<key>sourceDirectory</key>
+			<string>../../dev/netty/netty-3.2.4.Final</string>
+		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>279</integer>
+	<integer>337</integer>
 	<key>metaData</key>
 	<dict>
-		<key>../cv/src/main/webapp/css/resume.css</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>19</integer>
-				<key>line</key>
-				<integer>2</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>19</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>1</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>19</integer>
-				<key>line</key>
-				<integer>2</integer>
-			</dict>
-		</dict>
-		<key>../cv/src/main/webapp/resume.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>16</integer>
-				<key>line</key>
-				<integer>358</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>../cv/src/main/webapp/ui-progress-bar/stylesheets/ui.progress-bar.css</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>19</integer>
-				<key>line</key>
-				<integer>90</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>88</integer>
-		</dict>
 		<key>../technbolts-smog/src/main/scala/org/technbolts/smog/web/HomePage.scala</key>
 		<dict>
 			<key>caret</key>
@@ -175,40 +123,42 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.css</key>
+		<key>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>26</integer>
+				<integer>72</integer>
 				<key>line</key>
-				<integer>34</integer>
+				<integer>50</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>5</integer>
+			<integer>17</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>5</integer>
+				<key>line</key>
+				<integer>50</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>72</integer>
+				<key>line</key>
+				<integer>50</integer>
+			</dict>
 		</dict>
-		<key>build.sbt</key>
+		<key>src/main/webapp/resources/bubble/css/style.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>1</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>src/main/webapp/WEB-INF/web.xml</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>18</integer>
 				<key>line</key>
 				<integer>14</integer>
 			</dict>
@@ -221,76 +171,72 @@
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>6</integer>
+				<integer>8</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>1</integer>
 				<key>line</key>
 				<integer>14</integer>
 			</dict>
 		</dict>
-		<key>src/main/webapp/resources/curriculum.css</key>
+		<key>src/main/webapp/resources/bubble/index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>9</integer>
+				<integer>13</integer>
 				<key>line</key>
-				<integer>129</integer>
+				<integer>116</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>94</integer>
 		</dict>
-		<key>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</key>
+		<key>src/main/webapp/resources/cluster.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>15</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>4</integer>
 		</dict>
-		<key>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.progress-bar.css</key>
+		<key>src/main/webapp/resources/cluster.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>20</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>95</integer>
+				<integer>30</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>65</integer>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>../cv/src/main/webapp/resume.html</string>
-		<string>../cv/src/main/webapp/css/resume.css</string>
-		<string>build.sbt</string>
-		<string>src/main/webapp/resources/curriculum.css</string>
-		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.css</string>
-		<string>src/main/webapp/resources/ui-progress-bar/stylesheets/ui.progress-bar.css</string>
-		<string>src/main/webapp/WEB-INF/web.xml</string>
-		<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.css</string>
-		<string>../cv/src/main/webapp/ui-progress-bar/stylesheets/ui.progress-bar.css</string>
+		<string>src/main/webapp/resources/cluster.css</string>
+		<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.html</string>
+		<string>src/main/webapp/resources/bubble/index.html</string>
+		<string>src/main/webapp/resources/bubble/css/style.css</string>
+		<string>src/main/webapp/resources/cluster.js</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{339, 0}, {941, 778}}</string>
+	<string>{{398, 0}, {883, 778}}</string>
 </dict>
 </plist>

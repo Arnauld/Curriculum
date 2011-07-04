@@ -3,7 +3,6 @@ package curriculum.web.page
 import xml.NodeSeq
 import org.slf4j.LoggerFactory
 import java.util.Locale
-import sun.awt.SunHints.Value
 import curriculum.eav.{HtmlType, LinkType, Attribute, Instance}
 
 private class InstanceTemplate

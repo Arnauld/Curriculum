@@ -15,8 +15,9 @@
     <logger name="curriculum.util" level="DEBUG"/>
     <logger name="curriculum.web" level="DEBUG"/>
     <logger name="curriculum.cluster" level="DEBUG"/>
+    <logger name="curriculum.message" level="DEBUG"/>
     
-    <logger name="org.eclipse.jetty" level="DEBUG"/>
+    <logger name="org.eclipse.jetty" level="INFO"/>
 
     <root level="warn">
         <appender-ref ref="FILE"/>

@@ -6,8 +6,9 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
 import java.util.concurrent.Executors
 import org.jboss.netty.channel.{Channels, ChannelPipeline, ChannelPipelineFactory, Channel}
 import org.jboss.netty.handler.codec.http.{HttpContentCompressor, HttpResponseEncoder, HttpRequestDecoder}
-import java.net.{InetSocketAddress, URL}
-import curriculum.util.{MessageQueue, ProgressMonitor}
+import java.net.InetSocketAddress
+import curriculum.util.ProgressMonitor
+import curriculum.message.MessageQueue
 import curriculum.cluster.{ClusterMessage, ClusterNode}
 
 object ClusterNodeNetty {

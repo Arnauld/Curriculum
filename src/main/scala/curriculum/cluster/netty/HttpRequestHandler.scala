@@ -67,6 +67,7 @@ class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         if (content.readable()) {
           buf.append("CONTENT: " + content.toString(CharsetUtil.UTF_8) + "\r\n");
         }
+
         writeResponse(e);
       }
     } else {
@@ -98,9 +99,12 @@ class HttpRequestHandler extends SimpleChannelUpstreamHandler {
     // Decide whether to close the connection or not.
     val keepAlive = isKeepAlive(request);
 
+    val resp = buf.toString()
+    log.debug(resp)
+
     // Build the response object.
     val response: HttpResponse = new DefaultHttpResponse(HTTP_1_1, OK)
-    response.setContent(ChannelBuffers.copiedBuffer(buf.toString(), CharsetUtil.UTF_8))
+    response.setContent(ChannelBuffers.copiedBuffer(resp, CharsetUtil.UTF_8))
     response.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8")
 
     if (keepAlive) {

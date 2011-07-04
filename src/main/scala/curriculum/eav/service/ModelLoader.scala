@@ -3,7 +3,7 @@ package curriculum.eav.service
 import xml.{Node, NodeSeq}
 import curriculum.eav._
 import curriculum.util.{HasHtmlDescription, Locales, HasLabel}
-import org.slf4j.{LoggerFactory}
+import org.slf4j.LoggerFactory
 
 trait ModelLoader {
 

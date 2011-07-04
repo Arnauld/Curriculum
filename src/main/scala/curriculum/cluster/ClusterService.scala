@@ -2,11 +2,18 @@ package curriculum.cluster
 
 import netty.ClusterNodeNetty
 import org.slf4j.LoggerFactory
-import curriculum.util.{MessageQueue, ProgressMonitor, RunnableWithProgress}
+import curriculum.util.{ProgressMonitor, RunnableWithProgress}
+import curriculum.message.MessageQueue
+import java.net.BindException
+import java.util.concurrent.{ConcurrentHashMap, LinkedBlockingQueue}
+import java.util.concurrent.atomic.AtomicLong
 
 trait ClusterService {
   private val log = LoggerFactory.getLogger(classOf[ClusterService])
   private var nodes = Map[ClusterNode, ClusterNodeNetty]()
+  private val jobsToDispatch = new LinkedBlockingQueue[ClusterJob]
+  private val dispatchedJob = new ConcurrentHashMap[Long,ClusterJob]()
+  private val dispatchIdGen = new AtomicLong()
 
   // Map is immutable, return safely the keys view
   def listNodes: Iterable[ClusterNode] = nodes.keys
@@ -40,22 +47,69 @@ trait ClusterService {
     }
     monitor.worked(1)
 
+    import ClusterNodeException._
     monitor.subTask("node_start")
     try {
       // if node is already started this have no effect
       n.start(monitor.subMonitor)
+      onNodeStart()
     }
     catch {
       case e: ClusterNodeException =>
+        log.error("Failed to start node <%s> on port %d".format(node.name, node.port), e)
+        MessageQueue.Local.publish(ClusterMessage.nodeStartError(node))
         // simply rethrow it
         throw e
+      case e: BindException =>
+        log.error("Failed to start node <%s> on port %d".format(node.name, node.port), e)
+        MessageQueue.Local.publish(ClusterMessage.nodeBindError(node))
+        throw new ClusterNodeException(node, NodeStartError)
       case e: Exception =>
-        log.error("Failed to start node <{}> on port {}", node.name, node.port)
-        import ClusterNodeException._
+        log.error("Failed to start node <%s> on port %d".format(node.name, node.port), e)
+        MessageQueue.Local.publish(ClusterMessage.nodeStartError(node))
         throw new ClusterNodeException(node, NodeStartError)
     }
   }
+
+  def onNodeStart() {
+    // TODO: move me in an actor based to have a single and async thread that dispatch
+    dispatchJobs()
+  }
+
+  def dispatchJob[T](job:ClusterJob) {
+    jobsToDispatch.add(job)
+
+    // TODO: move me in an actor based to have a single and async thread that dispatch
+    dispatchJobs()
+  }
+
+  val roundRobin = new AtomicLong()
+
+  private[cluster] def dispatchJobs() {
+    val availables = this.listNodes.toArray
+    val nbAvailable = availables.length
+    if(nbAvailable==0) {
+      MessageQueue.Local.publish(ClusterMessage.noNodeRunning())
+    }
+    else {
+      var job = jobsToDispatch.poll()
+      while(job!=null) {
+        val index = (roundRobin.incrementAndGet()%nbAvailable).toInt
+        val jobId = dispatchIdGen.incrementAndGet()
+
+        // keep dispatched job, waiting the response
+        dispatchedJob.put(jobId, job)
+        Http.post(jobId, availables(index), job)
+
+        //
+        job = jobsToDispatch.poll()
+      }
+    }
+  }
+
 }
+
+
 
 object ClusterNodeException {
 
