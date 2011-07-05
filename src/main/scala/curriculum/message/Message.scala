@@ -1,8 +1,10 @@
 package curriculum.message
 
 import java.util.Locale
-import java.util.concurrent.atomic.AtomicLong
-import curriculum.util.LocaleAware
+import java.io.Writer
+import curriculum.util.{ToJSON, LocaleAware}
+import org.codehaus.jackson.{JsonGenerator, JsonFactory}
+import curriculum.util.ToJSON._
 
 object Message {
 
@@ -53,16 +55,18 @@ object Message {
     }
   }
 
-  def localeAware( messageCode: Message.Code, args: Any*) = new LocaleAware {
-    def adaptTo(locale: Locale) = messageCode.format(locale, args:_*)
+  def localeAware(messageCode: Message.Code, args: Any*) = new LocaleAware {
+    def adaptTo(locale: Locale) = messageCode.format(locale, args: _*)
   }
 }
 
-case class Message(messageType: Message.Type, messageCode: Message.Code, args: Any*) extends LocaleAware {
+case class Message(messageType: Message.Type, messageCode: Message.Code, args: Any*) extends LocaleAware with ToJSON {
 
-  def toLocaleAware = Message.localeAware(messageCode, args:_*)
+  var parameters = Map[String, Any]()
 
-  var marked = false
+  def toLocaleAware = Message.localeAware(messageCode, args: _*)
+
+  private[message] var marked = false
 
   private[message] var messageId = -1L
 
@@ -78,7 +82,13 @@ case class Message(messageType: Message.Type, messageCode: Message.Code, args: A
     messageCode.format(locale, adapted: _*)
   }
 
-  // ok... not the cleanest way to do so, but at least simple enough to continue for now...
-  def toJSON(locale: Locale) =
-    "{ \"id\":\"" + messageId + "\", \"type\":\"" + messageType.code + "\", \"message\":\"" + adaptTo(locale) + "\" }"
+  def toJSONString(locale: Locale): String = toJSONString(Map[Any, Any](classOf[Locale] -> locale))
+
+  def writeJSONContent(g: JsonGenerator, ctx: Map[Any, Any]) {
+    val locale = ctx.get(classOf[Locale]).getOrElse(Locale.US).asInstanceOf[Locale]
+    g.writeNumberField("id", messageId)
+    g.writeStringField("type", messageType.code)
+    g.writeStringField("message", adaptTo(locale))
+    writeField("parameters", parameters)(g)
+  }
 }

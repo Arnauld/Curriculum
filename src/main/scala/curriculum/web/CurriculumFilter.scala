@@ -10,10 +10,10 @@ import java.net.HttpURLConnection
 import java.util.{Locale, Date}
 import curriculum.cluster.{ClusterMessage, ClusterNode}
 import curriculum.message.MessageQueue
-import curriculum.util.{SearchParameters, Bytes, Strings}
 import curriculum.eav.Instance
-import curriculum.eav.service.SearchMessage
 import org.apache.commons.httpclient.HttpStatus
+import curriculum.util.{ToJSON, SearchParameters, Bytes, Strings}
+import curriculum.eav.service.{SearchBySimilitude, WeightedInstance, SearchMessage}
 
 class CurriculumFilter extends ScalatraFilter with ResourceSupport with ServicesProvider {
 
@@ -45,9 +45,8 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
       Thread.sleep(500)
       msgs = MessageQueue.Local.listMessages(lowerBound, 1)
     }
-    val json = msgs.map(_.toJSON(locale))
     contentType = "text/json"
-    json.mkString("[", ",", "]")
+    ToJSON.toJSONString(msgs)
   }
 
   /**
@@ -59,7 +58,11 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
       readInstanceFromParams match {
         case Some(inst) =>
           val keywords = params.get("keywords").getOrElse("").split(",")
-          val asyncResult = searchService.searchBySimilitude(inst, keywords, new SearchParameters {})
+          val asyncResult = searchService.search(SearchBySimilitude(inst, keywords, new SearchParameters {}))
+          asyncResult.setCallback({ result =>
+            // let's build clickable results
+            publishSearchResult(result)
+          })
           response.setStatus(HttpStatus.SC_ACCEPTED)
           ""
         case None =>
@@ -72,6 +75,12 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
         log.error("Oooops", e)
         throw e
     }
+  }
+
+  def publishSearchResult(results:List[WeightedInstance]) {
+    results.foreach({r =>
+      //---MessageQueue.Local.publish()
+    })
   }
 
   def readInstanceFromParams: Option[Instance] = {

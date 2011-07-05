@@ -1,0 +1,152 @@
+package curriculum.util
+
+import org.codehaus.jackson.{JsonGenerator, JsonFactory}
+import java.io.{OutputStream, Writer, StringWriter}
+import org.slf4j.LoggerFactory
+
+trait ToJSON {
+  def toJSONString(ctx: Map[Any, Any] = Map.empty[Any, Any]): String = {
+    val writer = new StringWriter()
+    writeJSON(writer, ctx)
+    writer.toString
+  }
+
+  def writeJSONWithoutContext(writer: Writer) {
+    writeJSON(writer: Writer, Map.empty[Any, Any])
+  }
+
+  def writeJSON(writer: Writer, ctx: Map[Any, Any]) {
+    val f = new JsonFactory()
+    implicit val g = f.createJsonGenerator(writer)
+    writeJSON(g, ctx)
+    g.close() // important: will force flushing of output, close underlying output stream
+  }
+
+  def writeJSONWithoutContext(stream: OutputStream) {
+    writeJSON(stream: OutputStream, Map.empty[Any, Any])
+  }
+
+  def writeJSON(stream: OutputStream, ctx: Map[Any, Any]) {
+    val f = new JsonFactory()
+    implicit val g = f.createJsonGenerator(stream)
+    writeJSON(g, ctx)
+    g.close() // important: will force flushing of output, close underlying output stream
+  }
+
+  def writeJSONContent(g: JsonGenerator, ctx: Map[Any, Any])
+
+  def writeJSON(g: JsonGenerator, ctx: Map[Any, Any]) {
+    import curriculum.util.ToJSON._
+    writeObject({
+      g =>
+        writeJSONContent(g, ctx)
+    })(g)
+  }
+
+  def writeJSONField(fieldName: String, g: JsonGenerator, ctx: Map[Any, Any]) {
+    import curriculum.util.ToJSON._
+    writeObjectField(fieldName, {
+      g =>
+        writeJSONContent(g, ctx)
+    })(g)
+  }
+
+}
+
+object ToJSON {
+
+  val log = LoggerFactory.getLogger(classOf[ToJSON])
+
+  def toJSONString(seq: Iterable[ToJSON], ctx: Map[Any, Any] = Map.empty[Any, Any]): String = {
+    val writer = new StringWriter()
+    writeArray(writer, seq, ctx)
+    writer.toString
+  }
+
+  def writeArray(writer: Writer, seq: Iterable[ToJSON], ctx: Map[Any, Any] = Map.empty[Any, Any]) {
+    val f = new JsonFactory()
+    implicit val g = f.createJsonGenerator(writer)
+    writeArray({
+      g =>
+        seq.foreach(_.writeJSON(g, ctx))
+    })
+    g.close() // important: will force flushing of output, close underlying output stream
+  }
+
+  def writeValue(a: Any, ctx: Map[Any, Any] = Map.empty[Any, Any])(implicit g: JsonGenerator) {
+    a match {
+      case x: String => g.writeString(x)
+      case x: Int => g.writeNumber(x)
+      case x: ToJSON => x.writeJSON(g, ctx)
+      case m: Map[_, _] =>
+        log.debug("Writing value as Map {}",a)
+        g.writeStartObject()
+        m.foreach({
+          e => writeField(e._1.asInstanceOf[String], e._2, ctx)
+        })
+        g.writeEndObject()
+      case x: Long => g.writeNumber(x)
+      case x: Float => g.writeNumber(x)
+      case x: Double => g.writeNumber(x)
+      case a: Iterable[_] =>
+        log.debug("Writing value as Array {}", a)
+                writeArray({
+        g =>
+          a.foreach(writeValue(_)(g))
+      })(g)
+    }
+  }
+
+  def writeField(name: String, a: Any, ctx: Map[Any, Any] = Map.empty[Any, Any])(implicit g: JsonGenerator) {
+    log.debug("About to write field {}", name)
+    a match {
+      case x: String => g.writeStringField(name, x)
+      case x: Int => g.writeNumberField(name, x)
+      case x: ToJSON =>
+        log.debug("Writing field as ToJSON {}", name)
+        x.writeJSONField(name, g, ctx)
+      case m: Map[_, _] =>
+        log.debug("Writing field as Map {}", name)
+        g.writeObjectFieldStart(name)
+        m.foreach({
+          e => writeField(e._1.asInstanceOf[String], e._2)
+        })
+        g.writeEndObject()
+      case x: Long => g.writeNumberField(name, x)
+      case x: Float => g.writeNumberField(name, x)
+      case x: Double => g.writeNumberField(name, x)
+      case a: Iterable[_] =>
+        log.debug("Writing field as Array {}", name)
+        writeArrayField(name, {
+          g =>
+            a.foreach(writeValue(_)(g))
+        })(g)
+    }
+  }
+
+  def writeObject(objectContent: (JsonGenerator) => Any)(implicit g: JsonGenerator) {
+    g.writeStartObject()
+    objectContent(g)
+    g.writeEndObject()
+  }
+
+  def writeObjectField(name:String, objectContent: (JsonGenerator) => Any)(implicit g: JsonGenerator) {
+    g.writeObjectFieldStart(name)
+    objectContent(g)
+    g.writeEndObject()
+  }
+
+
+  def writeArrayField(name: String, arrayContent: (JsonGenerator) => Any)(implicit g: JsonGenerator) {
+    g.writeArrayFieldStart(name)
+    arrayContent(g)
+    g.writeEndArray()
+  }
+
+  def writeArray(arrayContent: (JsonGenerator) => Any)(implicit g: JsonGenerator) {
+    g.writeStartArray()
+    arrayContent(g)
+    g.writeEndArray()
+  }
+
+}

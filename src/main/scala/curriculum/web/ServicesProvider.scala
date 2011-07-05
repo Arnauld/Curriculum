@@ -3,11 +3,11 @@ package curriculum.web
 import curriculum.task.TaskService
 import curriculum.cluster.ClusterService
 import curriculum.eav.service._
-import curriculum.eav.Instance
 import curriculum.util.SearchParameters
 import curriculum.cluster.search.ClusteredSearchService
 import curriculum.domain.{CurriculumVitaeInstances, CurriculumVitaeModels}
 import xml.Node
+import curriculum.eav.{SerializerComponent, Instance}
 
 trait ServicesProvider {
   /*
@@ -43,7 +43,7 @@ trait ServicesProvider {
   }
   val taskService = new TaskService {}
 
-  val clusterService = new ClusterService with ClusteredSearchService {}
+  val clusterService = new ClusterService with ClusteredSearchService with SerializerComponent{}
 
   val searchService: SearchService = clusterService
 }

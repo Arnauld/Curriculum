@@ -2,21 +2,21 @@ package curriculum.message
 
 import org.specs.Specification
 
-class MessageQueueSpecs extends Specification {
+class BasicMessageQueueSpecs extends Specification {
 
   val DefaultLimit = 10
 
-  "MessageQueue" should {
+  "BasicMessageQueue" should {
     "set message id on publish" in {
       val msg1 = Message.info(Message.code("Hello!"))
-      val queue = new MessageQueue {}
+      val queue = new BasicMessageQueue ("queue")
       queue.publish(msg1)
       msg1.messageId must_== 1
     }
 
     "publish one message and list it" in {
       val msg1 = Message.info(Message.code("Hello!"))
-      val queue = new MessageQueue {}
+      val queue = new BasicMessageQueue ("queue")
       queue.publish(msg1)
       val list = queue.listMessages(0)
       list.size must_== 1
@@ -26,7 +26,7 @@ class MessageQueueSpecs extends Specification {
     "publish two messages and list them in order" in {
       val msg1 = Message.info(Message.code("Hello 1!"))
       val msg2 = Message.info(Message.code("Hello 2!"))
-      val queue = new MessageQueue {}
+      val queue = new BasicMessageQueue ("queue")
       queue.publish(msg1)
       queue.publish(msg2)
       val list = queue.listMessages(0)
@@ -40,7 +40,7 @@ class MessageQueueSpecs extends Specification {
         i =>
           Message.info(Message.code("Hello " + i + "!"))
       }).toList
-      val queue = new MessageQueue {}
+      val queue = new BasicMessageQueue ("queue")
       msgs.foreach(queue.publish(_))
 
       val list = queue.listMessages(0)
@@ -56,7 +56,7 @@ class MessageQueueSpecs extends Specification {
         i =>
           Message.info(Message.code("Hello " + i + "!"))
       }).toList
-      val queue = new MessageQueue {}
+      val queue = new BasicMessageQueue ("queue")
       msgs.foreach(queue.publish(_))
 
       val listBefore = queue.listMessages(0)

@@ -128,7 +128,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="scala-2.9.0-1" level="project" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib_managed/jar/org.eclipse.jetty/jetty-webapp/jetty-webapp-7.4.2.v20110526.jar!/" />
@@ -137,7 +137,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib_managed/jar/org.eclipse.jetty/jetty-util/jetty-util-7.4.2.v20110526.jar!/" />
@@ -146,7 +146,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib_managed/jar/org.eclipse.jetty/jetty-io/jetty-io-7.4.2.v20110526.jar!/" />
@@ -155,7 +155,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib_managed/jar/org.eclipse.jetty/jetty-http/jetty-http-7.4.2.v20110526.jar!/" />
@@ -177,6 +177,24 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib_managed/jar/commons-httpclient/commons-httpclient/commons-httpclient-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib_managed/jar/org.codehaus.jackson/jackson-mapper-lgpl/jackson-mapper-lgpl-1.8.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib_managed/jar/org.codehaus.jackson/jackson-core-lgpl/jackson-core-lgpl-1.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
