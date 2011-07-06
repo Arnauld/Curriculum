@@ -94,12 +94,12 @@ trait ClusterService {
     else {
       var job = jobsToDispatch.poll()
       while(job!=null) {
-        val index = (roundRobin.incrementAndGet()%nbAvailable).toInt
+        val choosenNode = (roundRobin.incrementAndGet()%nbAvailable).toInt
         val jobId = dispatchIdGen.incrementAndGet()
 
         // keep dispatched job, waiting the response
         dispatchedJob.put(jobId, job)
-        Http.post(jobId, availables(index), job)
+        Http.post(jobId, availables(choosenNode), job)
 
         //
         job = jobsToDispatch.poll()
