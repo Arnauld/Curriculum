@@ -14,10 +14,11 @@ object Http {
 
   def post(jobId:Long, node:ClusterNode, job:ClusterJob) {
     val method = new PostMethod("http://"+node.address+":"+node.port+"/"+job.actionName)
+    method.addRequestHeader("job_id", jobId.toString)
+    method.addRequestHeader("response_path", "/"+job.actionName)
 
     val bout = new ByteArrayOutputStream()
     val dout = new DataOutputStream(bout)
-    dout.writeLong(jobId)
     job.writeQuery(dout)
     method.setRequestEntity(new ByteArrayRequestEntity(bout.toByteArray))
 

@@ -42,8 +42,8 @@ $(function() {
          });
     })
 
-    //
-    cluster.waitForMessage();
+    // start polling
+    cluster.startPolling();
 });
 
 var cluster = {
@@ -68,7 +68,7 @@ var cluster = {
             $(this).addClass("hover");
         },
         function() {
-            $(this).removeClass("hover"");
+            $(this).removeClass("hover");
         })
         $msg.fadeIn(300);
     },
@@ -84,10 +84,7 @@ var cluster = {
           dataType: "json"
         });
 
-        if(cluster.scheduled!=null)
-            clearTimeout(cluster.scheduled);
         cluster.numberOfCallsWithoutMessage = 0;//prevent wait
-        cluster.waitForMessage();
     },
 
     defaultMsg: {
@@ -109,13 +106,40 @@ var cluster = {
 
     numberOfCallsWithoutMessage: 0,
 
-    scheduled: null,
+    isPolling: false,
+
+    checkPeriodicity: "1000", // every 1 second
+
+    tickCount: 0,
+
+    startPolling: function () {
+        setInterval("cluster.waitForMessage()", cluster.checkPeriodicity);
+    },
 
     /*
      * Probably not the most efficient way to do this
      * TODO: replace by long polling
      */
     waitForMessage: function () {
+        console.log("waitForMessage isPolling: " + cluster.isPolling);
+        if(cluster.isPolling)
+            return;
+        cluster.isPolling = true;
+
+        cluster.tickCount = cluster.tickCount + 1;
+        var elligible =   (cluster.numberOfCallsWithoutMessage==0)
+                        ||(cluster.numberOfCallsWithoutMessage<2 && cluster.tickCount%2 == 0)
+                        ||(cluster.numberOfCallsWithoutMessage<5 && cluster.tickCount%5 == 0)
+                        ||(cluster.tickCount%10 == 0);
+
+        console.log("waitForMessage elligible: " + elligible);
+        if(elligible)
+            cluster.pollMessages();
+        cluster.isPolling = false;
+    },
+
+    pollMessages: function () {
+        console.log("pollMessages begin");
         $.ajax({
             type: "GET",
             url: "/msg/list/"+cluster.lastMessage,
@@ -134,26 +158,14 @@ var cluster = {
                     cluster.log(val);
                 });
 
-                // poll less frequently if there are no messages
-                var nextTry = 1000;
-                if(retrieved>0) {
-                    cluster.numberOfCallsWithoutMessage = 0;
-                }
-                else {
+                if(retrieved>0)
+                    cluster.numberOfCallsWithoutMessage = 0; //prevent wait
+                else
                     cluster.numberOfCallsWithoutMessage = cluster.numberOfCallsWithoutMessage + 1;
-                    nextTry = 1000 * cluster.numberOfCallsWithoutMessage;
-                    if(nextTry>5000)
-                        nextTry = 5000;
-                }
-
-                cluster.scheduled = setTimeout(
-                    'cluster.waitForMessage()', /* Request next messages */
-                    nextTry /* ..after nextTry milliseconds */
-                );
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 if(cluster.lastCallInError) {
-                    // only log is the previous was not an error
+                    // only log if the previous was not an error
                 }
                 else {
                     cluster.lastCallInError = true;
@@ -162,9 +174,6 @@ var cluster = {
                         message = "Server probably down";
                     cluster.log({"type":"type-error", "message":message + " (" + errorThrown + ")"});
                 }
-                setTimeout(
-                    'cluster.waitForMessage()', /* Try again after.. */
-                    "15000"); /* milliseconds (15seconds) */
             },
         });
     }

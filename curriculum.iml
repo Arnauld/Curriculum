@@ -170,7 +170,9 @@
           <root url="jar://$MODULE_DIR$/lib_managed/bundle/org.jboss.netty/netty/netty-3.2.4.Final.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$USER_HOME$/dev/netty/netty-3.2.4.Final/src/main/java" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -195,6 +197,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib_managed/jar/org.codehaus.jackson/jackson-core-lgpl/jackson-core-lgpl-1.8.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib_managed/jar/com.google.guava/guava/guava-r08.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

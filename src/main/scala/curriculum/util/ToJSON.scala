@@ -1,8 +1,9 @@
 package curriculum.util
 
 import org.codehaus.jackson.{JsonGenerator, JsonFactory}
-import java.io.{OutputStream, Writer, StringWriter}
 import org.slf4j.LoggerFactory
+import org.codehaus.jackson.map.ObjectMapper
+import java.io.{ByteArrayOutputStream, OutputStream, Writer, StringWriter}
 
 trait ToJSON {
   def toJSONString(ctx: Map[Any, Any] = Map.empty[Any, Any]): String = {
@@ -54,8 +55,34 @@ trait ToJSON {
 }
 
 object ToJSON {
-
   val log = LoggerFactory.getLogger(classOf[ToJSON])
+
+  private val objectMapper = new ObjectMapper
+  private val jsonFactory = new JsonFactory
+  var prettyPrint = true
+
+  def toJson(pojo:AnyRef):Array[Byte] = {
+    val bout = new ByteArrayOutputStream()
+    toJson(pojo, bout)
+    bout.toByteArray
+  }
+
+  def toJson(pojo:AnyRef, out:OutputStream) {
+    val jg = jsonFactory.createJsonGenerator(out)
+    if (prettyPrint) {
+        jg.useDefaultPrettyPrinter()
+    }
+    objectMapper.writeValue(jg, pojo)
+  }
+
+
+  def fromJson[T](jsonAsString: String, clazz: Class[T]): T = {
+    objectMapper.readValue(jsonAsString, clazz);
+  }
+
+  def fromJson[T](jsonAsBytes: Array[Byte], clazz: Class[T]): T = {
+    objectMapper.readValue(jsonAsBytes, clazz);
+  }
 
   def toJSONString(seq: Iterable[ToJSON], ctx: Map[Any, Any] = Map.empty[Any, Any]): String = {
     val writer = new StringWriter()
@@ -66,6 +93,9 @@ object ToJSON {
   def writeArray(writer: Writer, seq: Iterable[ToJSON], ctx: Map[Any, Any] = Map.empty[Any, Any]) {
     val f = new JsonFactory()
     implicit val g = f.createJsonGenerator(writer)
+    if (prettyPrint) {
+        g.useDefaultPrettyPrinter();
+    }
     writeArray({
       g =>
         seq.foreach(_.writeJSON(g, ctx))
@@ -79,7 +109,7 @@ object ToJSON {
       case x: Int => g.writeNumber(x)
       case x: ToJSON => x.writeJSON(g, ctx)
       case m: Map[_, _] =>
-        log.debug("Writing value as Map {}",a)
+        log.debug("Writing value as Map {}", a)
         g.writeStartObject()
         m.foreach({
           e => writeField(e._1.asInstanceOf[String], e._2, ctx)
@@ -90,10 +120,10 @@ object ToJSON {
       case x: Double => g.writeNumber(x)
       case a: Iterable[_] =>
         log.debug("Writing value as Array {}", a)
-                writeArray({
-        g =>
-          a.foreach(writeValue(_)(g))
-      })(g)
+        writeArray({
+          g =>
+            a.foreach(writeValue(_)(g))
+        })(g)
     }
   }
 
@@ -121,6 +151,8 @@ object ToJSON {
           g =>
             a.foreach(writeValue(_)(g))
         })(g)
+      case unknown: AnyRef =>
+        log.warn("Unable to write field <{}> with value of type <{}>", name, unknown.getClass)
     }
   }
 
@@ -130,7 +162,7 @@ object ToJSON {
     g.writeEndObject()
   }
 
-  def writeObjectField(name:String, objectContent: (JsonGenerator) => Any)(implicit g: JsonGenerator) {
+  def writeObjectField(name: String, objectContent: (JsonGenerator) => Any)(implicit g: JsonGenerator) {
     g.writeObjectFieldStart(name)
     objectContent(g)
     g.writeEndObject()

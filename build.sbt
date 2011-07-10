@@ -37,6 +37,7 @@ libraryDependencies ++= Seq(
   "commons-codec" % "commons-codec" % "1.5",
   "joda-time" % "joda-time" % "1.6.2",
   "org.codehaus.jackson" % "jackson-mapper-lgpl" % "1.8.2",
+  "com.google.guava" % "guava" % "r08",
   /*"com.google.inject" % "guice" % "3.0",*/
   // logs
   "org.slf4j" % "slf4j-api" % "1.6.0",

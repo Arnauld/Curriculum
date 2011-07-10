@@ -4,17 +4,17 @@ import org.slf4j.LoggerFactory
 import org.jboss.netty.bootstrap.ServerBootstrap
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
 import java.util.concurrent.Executors
-import org.jboss.netty.channel.{Channels, ChannelPipeline, ChannelPipelineFactory, Channel}
 import org.jboss.netty.handler.codec.http.{HttpContentCompressor, HttpResponseEncoder, HttpRequestDecoder}
 import java.net.InetSocketAddress
 import curriculum.util.ProgressMonitor
 import curriculum.message.MessageQueue
 import curriculum.cluster.{ClusterMessage, ClusterNode}
+import org.jboss.netty.channel._
 
 object ClusterNodeNetty {
 }
 
-case class ClusterNodeNetty(node:ClusterNode) {
+case class ClusterNodeNetty(node: ClusterNode) {
   val name: String = node.name
   val port: Int = node.port
 
@@ -22,7 +22,10 @@ case class ClusterNodeNetty(node:ClusterNode) {
 
   private var channel: Option[Channel] = None
 
-  def start(monitor:ProgressMonitor) {
+  /**
+   *
+   */
+  def start(monitor: ProgressMonitor) {
     monitor.subTask("check-node-already-started")
     synchronized {
       channel match {
@@ -72,6 +75,26 @@ case class ClusterNodeNetty(node:ClusterNode) {
           MessageQueue.Local.publish(ClusterMessage.nodeAlreadyStarted(node))
           log.info("Node <{}> already started on port {}", name, port)
       }
+    }
+  }
+
+
+  /**
+   *
+   */
+  def stop(): Option[ChannelFuture] = {
+    log.info("Stoping Node <{}> on port {}...", name, port)
+    channel match {
+      case Some(c) =>
+        val future = c.close()
+        future.addListener(new ChannelFutureListener {
+          def operationComplete(p1: ChannelFuture) {
+            log.info("Node <{}> on port {} stopped!", name, port)
+          }
+        })
+        Some(future)
+      case None =>
+        None
     }
   }
 }

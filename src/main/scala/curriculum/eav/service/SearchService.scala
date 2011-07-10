@@ -4,6 +4,7 @@ import curriculum.eav.Instance
 import curriculum.util.{ToJSON, AsyncResult, SearchParameters}
 import org.codehaus.jackson.JsonGenerator
 import curriculum.util.ToJSON._
+import reflect.BeanProperty
 
 trait SearchService {
   def search(search: SearchBySimilitude): SearchBySimilitude.Result
@@ -22,8 +23,7 @@ case class SearchBySimilitude(instance: Instance, keywords: Array[String], searc
   }
 }
 
-case class WeightedInstance(instanceId: Long, weight: Int) {
-}
+class WeightedInstance(@BeanProperty var instanceId: Long, @BeanProperty var weight: Int)
 
 
 

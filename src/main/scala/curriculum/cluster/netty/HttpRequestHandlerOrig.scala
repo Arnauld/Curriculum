@@ -11,24 +11,16 @@ import org.jboss.netty.handler.codec.http.HttpHeaders.Names._
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
 import org.jboss.netty.handler.codec.http.HttpVersion._
 import scala.collection.JavaConversions._
-import com.google.common.collect.{Multimap, LinkedListMultimap}
-import curriculum.eav.service.WeightedInstance
-import curriculum.util.{ToJSON, Misc}
-import Misc._
 
-class HttpRequestHandler extends SimpleChannelUpstreamHandler {
+class HttpRequestHandlerOrig extends SimpleChannelUpstreamHandler {
 
-  val log = LoggerFactory.getLogger(classOf[HttpRequestHandler])
+  val log = LoggerFactory.getLogger(classOf[HttpRequestHandlerOrig])
 
   var request: HttpRequest = null
   var readingChunks: Boolean = false
 
-  val headers:Multimap[String,String] = LinkedListMultimap.create[String,String]()
-  var protocolVersion: Option[HttpVersion] = None
-  var host:Option[String] = None
-  var requestUri:Option[String] = None
-  var path:Option[String] = None
-  var content:Array[Byte] = Array.empty[Byte]
+  /**Buffer that stores the response content */
+  private val buf = new StringBuilder
 
   override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
     if (!readingChunks) {
@@ -39,42 +31,66 @@ class HttpRequestHandler extends SimpleChannelUpstreamHandler {
         send100Continue(e);
       }
 
-      protocolVersion = Some(request.getProtocolVersion)
-      host = someOrNone(getHost(request))
-      requestUri = someOrNone(request.getUri)
+      buf.setLength(0);
+      buf.append("WELCOME TO THE WILD WILD WEB SERVER\r\n");
+      buf.append("===================================\r\n");
 
-      request.getHeaders.foreach({ h => headers.put(h.getKey, h.getValue) })
+      buf.append("VERSION: " + request.getProtocolVersion + "\r\n");
+      buf.append("HOSTNAME: " + getHost(request, "unknown") + "\r\n");
+      buf.append("REQUEST_URI: " + request.getUri + "\r\n\r\n");
+
+      val headers = request.getHeaders
+      headers.foreach({
+        h =>
+          buf.append("HEADER: " + h.getKey + " = " + h.getValue + "\r\n");
+      })
+      buf.append("\r\n");
+
       val queryStringDecoder = new QueryStringDecoder(request.getUri)
-      import scala.collection.JavaConversions._
-      queryStringDecoder.getParameters.foreach({t => headers.putAll(t._1, t._2) })
-      path = Some(queryStringDecoder.getPath)
+      val params = queryStringDecoder.getParameters
+      if (!params.isEmpty) {
+        val entries = params.entrySet
+        entries.foreach({
+          t =>
+            val key = t.getKey
+            val values = t.getValue
+            buf.append("PARAM: " + key + " = " + values.reduceLeft(_ + ";" + _) + "\r\n");
+
+        })
+        buf.append("\r\n");
+      }
 
       if (request.isChunked) {
         readingChunks = true;
       } else {
         val content: ChannelBuffer = request.getContent
         if (content.readable()) {
-          this.content = content.array()
+          buf.append("CONTENT: " + content.toString(CharsetUtil.UTF_8) + "\r\n");
         }
 
-        writeResponse(e)
+        writeResponse(e);
       }
     } else {
       val chunk: HttpChunk = e.getMessage.asInstanceOf[HttpChunk]
       if (chunk.isLast) {
-        readingChunks = false
+        readingChunks = false;
+        buf.append("END OF CONTENT\r\n");
 
         val trailer: HttpChunkTrailer = chunk.asInstanceOf[HttpChunkTrailer]
         val headerNames = trailer.getHeaderNames
+        if (!headerNames.isEmpty) {
+          buf.append("\r\n");
           headerNames.foreach({
             name =>
               val values = trailer.getHeaders(name)
-              headers.putAll(name, values)
+              buf.append("TRAILING HEADER: " + name + " = " + values.reduceLeft(_ + "," + _) + "\r\n");
           })
+          buf.append("\r\n");
+        }
 
-        writeResponse(e)
+        writeResponse(e);
       } else {
-        this.content = chunk.getContent.array()
+        buf.append("CHUNK: " + chunk.getContent.toString(CharsetUtil.UTF_8) + "\r\n");
       }
     }
   }
@@ -83,15 +99,13 @@ class HttpRequestHandler extends SimpleChannelUpstreamHandler {
     // Decide whether to close the connection or not.
     val keepAlive = isKeepAlive(request);
 
-    log.debug(new String(content, CharsetUtil.UTF_8))
-
-    val found = new WeightedInstance(1, 100)
-    val asBytes = ToJSON.toJson(found)
+    val resp = buf.toString()
+    log.debug(resp)
 
     // Build the response object.
     val response: HttpResponse = new DefaultHttpResponse(HTTP_1_1, OK)
-    response.setContent(ChannelBuffers.copiedBuffer(asBytes))
-    response.setHeader(CONTENT_TYPE, "text/json; charset=UTF-8")
+    response.setContent(ChannelBuffers.copiedBuffer(resp, CharsetUtil.UTF_8))
+    response.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8")
 
     if (keepAlive) {
       // Add 'Content-Length' header only for a keep-alive connection.
