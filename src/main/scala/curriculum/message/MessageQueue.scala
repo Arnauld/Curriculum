@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.{AtomicLong, AtomicInteger}
 
 object MessageQueue {
   var Local = new BasicMessageQueue("")
+  def Remote = Local
 }
 
 trait MessageQueue {

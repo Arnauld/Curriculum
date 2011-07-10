@@ -15,6 +15,10 @@ trait ClusterService {
   private val dispatchedJob = new ConcurrentHashMap[Long,ClusterJob]()
   private val dispatchIdGen = new AtomicLong()
 
+  def dispose () {
+    nodes.values.foreach(_.stop())
+  }
+
   // Map is immutable, return safely the keys view
   def listNodes: Iterable[ClusterNode] = nodes.keys
 

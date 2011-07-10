@@ -77,3 +77,17 @@ jetty
 
         ~sbt> jetty-run
 
+
+JSON
+==============================================
+
+unfortunately 'jackson-module-scala' seems to not work as is with scala 2.9.0-1...
+
+https://github.com/FasterXML/jackson-module-scala
+
+        git clone https://github.com/FasterXML/jackson-module-scala.git
+
+in pom.xml edit packaging from 'bundle' to 'jar'
+and scala version from '2.8.0' to '2.9.0-1'
+
+        mvn -DaltDeploymentRepository=repo::default::file:../arnauld.github.com/maven2 clean install source:jar javadoc:jar deploy

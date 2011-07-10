@@ -1,9 +1,11 @@
 package curriculum.util
 
-import org.codehaus.jackson.{JsonGenerator, JsonFactory}
 import org.slf4j.LoggerFactory
 import org.codehaus.jackson.map.ObjectMapper
-import java.io.{ByteArrayOutputStream, OutputStream, Writer, StringWriter}
+import java.io._
+import org.codehaus.jackson.`type`.TypeReference
+import com.fasterxml.jackson.module.scala.ScalaModule
+import org.codehaus.jackson.{JsonToken, JsonParser, JsonGenerator, JsonFactory}
 
 trait ToJSON {
   def toJSONString(ctx: Map[Any, Any] = Map.empty[Any, Any]): String = {
@@ -58,6 +60,7 @@ object ToJSON {
   val log = LoggerFactory.getLogger(classOf[ToJSON])
 
   private val objectMapper = new ObjectMapper
+
   private val jsonFactory = new JsonFactory
   var prettyPrint = true
 
@@ -76,12 +79,39 @@ object ToJSON {
   }
 
 
-  def fromJson[T](jsonAsString: String, clazz: Class[T]): T = {
+  def valueFromJson[T](jsonAsString: String, clazz: Class[T]): T = {
     objectMapper.readValue(jsonAsString, clazz);
   }
 
-  def fromJson[T](jsonAsBytes: Array[Byte], clazz: Class[T]): T = {
+  def valueFromJson[T](jsonAsBytes: Array[Byte], clazz: Class[T]): T = {
     objectMapper.readValue(jsonAsBytes, clazz);
+  }
+
+  def valueFromJson[T](jsonAsBytes: DataInputStream, clazz: Class[T]): T = {
+    objectMapper.readValue(jsonAsBytes, clazz);
+  }
+
+  def valuesFromJson[T](jsonAsStream: DataInputStream, clazz: Class[T]): List[T] = {
+    val parser = jsonFactory.createJsonParser(jsonAsStream)
+    parseValues(parser, clazz)
+  }
+
+  def valuesFromJson[T](jsonAsString: String, clazz: Class[T]): List[T] = {
+    val parser = jsonFactory.createJsonParser(jsonAsString)
+    parseValues(parser, clazz)
+  }
+
+  def parseValues[T](parser:JsonParser, clazz: Class[T]): List[T] = {
+    if (parser.nextToken() != JsonToken.START_ARRAY) {
+      throw new MalformedDataException("Illegal state: values must start with a <start_array> token")
+    }
+    var token = parser.nextToken()
+    var elems:List[T] = Nil
+    while(token != JsonToken.END_ARRAY) {
+      elems = objectMapper.readValue(parser, clazz) :: elems
+      token = parser.nextToken()
+    }
+    elems
   }
 
   def toJSONString(seq: Iterable[ToJSON], ctx: Map[Any, Any] = Map.empty[Any, Any]): String = {

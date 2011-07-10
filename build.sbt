@@ -37,6 +37,7 @@ libraryDependencies ++= Seq(
   "commons-codec" % "commons-codec" % "1.5",
   "joda-time" % "joda-time" % "1.6.2",
   "org.codehaus.jackson" % "jackson-mapper-lgpl" % "1.8.2",
+  "com.fasterxml" % "jackson-module-scala" % "0.5.0-arnauld-SNAPSHOT" notTransitive(),
   "com.google.guava" % "guava" % "r08",
   /*"com.google.inject" % "guice" % "3.0",*/
   // logs
@@ -53,5 +54,6 @@ resolvers ++= Seq(
   "Sonatype OSS" at "http://oss.sonatype.org/content/repositories/releases/",
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
   "Web plugin repo" at "http://siasia.github.com/maven2",
-  "FuseSource Snapshot Repository" at "http://repo.fusesource.com/nexus/content/repositories/snapshots"
+  "FuseSource Snapshot Repository" at "http://repo.fusesource.com/nexus/content/repositories/snapshots",
+  "Arnauld" at "https://github.com/Arnauld/arnauld.github.com/raw/master/maven2"
 )

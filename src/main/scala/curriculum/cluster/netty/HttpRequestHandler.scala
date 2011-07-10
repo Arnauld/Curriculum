@@ -85,12 +85,21 @@ class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
     log.debug(new String(content, CharsetUtil.UTF_8))
 
-    val found = new WeightedInstance(1, 100)
-    val asBytes = ToJSON.toJson(found)
+    val reponseContent = path match {
+      case Some(query) if(query=="/searchBySimilitude") =>
+        val found = new WeightedInstance(1, 100)
+        ToJSON.toJson(Array(found))
+      case Some(query) =>
+        log.warn("Unsupported query <{}>", query)
+        Array.empty[Byte]
+      case _ =>
+        log.error("No query action defined")
+        Array.empty[Byte]
+    }
 
     // Build the response object.
     val response: HttpResponse = new DefaultHttpResponse(HTTP_1_1, OK)
-    response.setContent(ChannelBuffers.copiedBuffer(asBytes))
+    response.setContent(ChannelBuffers.copiedBuffer(reponseContent))
     response.setHeader(CONTENT_TYPE, "text/json; charset=UTF-8")
 
     if (keepAlive) {

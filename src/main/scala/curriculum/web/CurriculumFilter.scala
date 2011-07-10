@@ -14,12 +14,15 @@ import curriculum.eav.Instance
 import org.apache.commons.httpclient.HttpStatus
 import curriculum.util.{ToJSON, SearchParameters, Bytes, Strings}
 import curriculum.eav.service.{SearchBySimilitude, WeightedInstance, SearchMessage}
+import javax.servlet.FilterConfig
 
 class CurriculumFilter extends ScalatraFilter with ResourceSupport with ServicesProvider {
 
   val log = LoggerFactory.getLogger(classOf[CurriculumFilter])
 
   var locale = Locale.FRANCE
+
+
 
   /**
    * test
@@ -75,6 +78,17 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
         log.error("Oooops", e)
         throw e
     }
+  }
+
+  override def init(filterConfig: FilterConfig) {
+    super.init(filterConfig)
+    log.info("Filter started!")
+  }
+
+  override def destroy() {
+    log.info("Filter Destoyed!")
+    clusterService.dispose()
+    super.destroy()
   }
 
   def publishSearchResult(results:List[WeightedInstance]) {

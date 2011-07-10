@@ -2,11 +2,11 @@ package curriculum.eav
 
 import java.lang.Boolean
 import org.slf4j.LoggerFactory
-import curriculum.util.ToJSON
 import java.io.InputStream
 import org.omg.DynamicAny.FieldNameHelper
 import service.{EntityNotFoundException, EntityService, InstanceService}
 import org.codehaus.jackson.{JsonFactory, JsonToken, JsonParser, JsonGenerator}
+import curriculum.util.{UnsupportedDataException, MalformedDataException, ToJSON}
 
 /**
  * The base class for an... instance!
@@ -180,9 +180,9 @@ object Instance {
   }
 }
 
-class MalformedDataException(message: String) extends Exception(message)
 
-class UnsupportedDataException(message: String) extends Exception(message)
+
+
 
 
 

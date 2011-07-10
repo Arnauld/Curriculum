@@ -5,6 +5,7 @@ import curriculum.util.{ToJSON, AsyncResult, SearchParameters}
 import org.codehaus.jackson.JsonGenerator
 import curriculum.util.ToJSON._
 import reflect.BeanProperty
+import org.codehaus.jackson.annotate.{JsonProperty, JsonCreator}
 
 trait SearchService {
   def search(search: SearchBySimilitude): SearchBySimilitude.Result
@@ -23,7 +24,8 @@ case class SearchBySimilitude(instance: Instance, keywords: Array[String], searc
   }
 }
 
-class WeightedInstance(@BeanProperty var instanceId: Long, @BeanProperty var weight: Int)
+class WeightedInstance @JsonCreator()(@JsonProperty("instanceId")  var instanceId: Long,
+                                      @JsonProperty("weight") var weight: Int)
 
 
 

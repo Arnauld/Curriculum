@@ -17,7 +17,7 @@
     <logger name="curriculum.util.ToJSON" level="DEBUG"/>
     <logger name="curriculum.web" level="DEBUG"/>
     <logger name="curriculum.cluster" level="DEBUG"/>
-    <logger name="curriculum.message" level="DEBUG"/>
+    <logger name="curriculum.message" level="INFO"/>
     
     <logger name="org.eclipse.jetty" level="INFO"/>
 

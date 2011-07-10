@@ -3,11 +3,11 @@ package curriculum.cluster.netty
 import org.specs.Specification
 import org.slf4j.LoggerFactory
 import curriculum.eav.Samples
-import curriculum.util.{SearchParameters, ProgressMonitor}
 import curriculum.eav.service.{WeightedInstance, SearchBySimilitude}
 import java.io.{DataOutputStream, DataInputStream}
 import curriculum.cluster.{Http, ClusterJob, ClusterNode}
 import java.util.concurrent.TimeUnit
+import curriculum.util.{ToJSON, SearchParameters, ProgressMonitor}
 
 class ClusterNodeNettySpecs extends Specification {
   val log = LoggerFactory.getLogger(classOf[ClusterNodeNetty])
@@ -45,6 +45,8 @@ class ClusterNodeNettySpecs extends Specification {
       def actionName = "searchBySimilitude"
 
       def readResponse(in: DataInputStream) {
+        val values = ToJSON.valuesFromJson(in, classOf[WeightedInstance])
+        println("Response: " + values)
       }
 
       def setCallback(c: (List[WeightedInstance]) => Any) {

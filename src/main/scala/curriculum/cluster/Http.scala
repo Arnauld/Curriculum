@@ -3,7 +3,7 @@ package curriculum.cluster
 import org.slf4j.LoggerFactory
 import org.apache.commons.httpclient.methods.{ByteArrayRequestEntity, PostMethod}
 import org.apache.commons.httpclient.{HttpException, HttpStatus, HttpClient}
-import java.io.{DataOutputStream, ByteArrayOutputStream, IOException}
+import java.io._
 
 private class Http
 
@@ -35,7 +35,9 @@ object Http {
 
       // Deal with the response.
       // Use caution: ensure correct character encoding and is not binary data
-      System.out.println(new String(responseBody));
+      if(log.isDebugEnabled)
+        log.debug(new String(responseBody));
+      job.readResponse(new DataInputStream(new ByteArrayInputStream(responseBody)))
 
     } catch {
       case e:HttpException =>
