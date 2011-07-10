@@ -1,12 +1,12 @@
 package curriculum.cluster.search
 
-import curriculum.util.SearchParameters
 import curriculum.cluster.{ClusterJob, ClusterService}
 import java.io.{DataInputStream, DataOutputStream}
 import curriculum.message.MessageQueue
 import curriculum.eav.{SerializerComponent, Instance}
 import scala.Any
 import curriculum.eav.service.{SearchBySimilitude, SearchMessage, WeightedInstance, SearchService}
+import curriculum.util.{ToJSON, SearchParameters}
 
 trait ClusteredSearchService extends SearchService {
   self:ClusterService =>
@@ -21,9 +21,13 @@ trait ClusteredSearchService extends SearchService {
       def actionName = "searchBySimilitude"
 
       def readResponse(in: DataInputStream) {
-
+        val values = ToJSON.valuesFromJson(in, classOf[WeightedInstance])
+        result = Some(values)
+        callback match {
+          case Some(cb) => cb(values)
+          case None => // nothing to do :)
+        }
       }
-
 
       def setCallback(c: (List[WeightedInstance]) => Any) {
         callback = Some(c)

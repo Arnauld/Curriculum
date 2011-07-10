@@ -54,7 +54,7 @@ class CurriculumVitaePage(val instance: Instance, val locale: Locale = Locale.FR
   def renderSummary(value: Instance): NodeSeq = NodeSeq.Empty
 
   def sectionSeparator = <p style="text-align: center;">
-    <img alt="separateur" src="resources/images/separateur.png" height="20" width="500"/>
+    <img alt="separateur" src="/resources/images/separateur.png" height="20" width="500"/>
     </p>
 
   def renderExperiences(experiences: List[Instance]): NodeSeq = {

@@ -111,6 +111,8 @@ class ClusterAdminPage() extends HtmlPage {
           </div>
         </div-->
       </section>
+      <section id="display">
+      </section>
     </div>
 
   val old =

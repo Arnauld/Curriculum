@@ -15,6 +15,8 @@ import org.apache.commons.httpclient.HttpStatus
 import curriculum.util.{ToJSON, SearchParameters, Bytes, Strings}
 import curriculum.eav.service.{SearchBySimilitude, WeightedInstance, SearchMessage}
 import javax.servlet.FilterConfig
+import curriculum.eav.service.web.WebMessage
+import xml.NodeSeq
 
 class CurriculumFilter extends ScalatraFilter with ResourceSupport with ServicesProvider {
 
@@ -92,8 +94,10 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
   }
 
   def publishSearchResult(results:List[WeightedInstance]) {
-    results.foreach({r =>
-      //---MessageQueue.Local.publish()
+    MessageQueue.Local.publish(SearchMessage.searchFinished(results.length))
+    results.foreach({inst =>
+      val msg = WebMessage.weightedInstanceLink(inst, "/show/%d")
+      MessageQueue.Local.publish(msg)
     })
   }
 
@@ -142,7 +146,15 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
   /**
    * cv ;)
    */
+  get("/show/1") {
+    showCV
+  }
+
   get("/arnauld") {
+    showCV
+  }
+
+  def showCV:NodeSeq = {
     val instance = instanceReader.loadInstance(CurriculumVitaeInstances.Arnauld)
 
     /*
@@ -152,7 +164,6 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     val layout = new Layout {}
     layout.render(page.content)
   }
-
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   var skipResourceManagement = true

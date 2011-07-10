@@ -24,8 +24,8 @@ case class SearchBySimilitude(instance: Instance, keywords: Array[String], searc
   }
 }
 
-class WeightedInstance @JsonCreator()(@JsonProperty("instanceId")  var instanceId: Long,
-                                      @JsonProperty("weight") var weight: Int)
+class WeightedInstance @JsonCreator()(@BeanProperty @JsonProperty("instanceId")  var instanceId: Long,
+                                      @BeanProperty @JsonProperty("weight") var weight: Int)
 
 
 

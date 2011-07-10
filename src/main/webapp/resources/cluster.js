@@ -71,6 +71,13 @@ var cluster = {
             $(this).removeClass("hover");
         })
         $msg.fadeIn(300);
+        $msg.find(".instance-link").click(function() {
+            var $this = $(this);
+            $("#display").empty();
+            $("#display").append("<iframe src='" + $this.attr("href") + "' width='630px' height='800px'></iframe>");
+            $("#logs").stop().animate({"left":"650px"}, 1000, "swing");
+            return false;
+        });
     },
 
     send: function(_method, _url,_data) {
