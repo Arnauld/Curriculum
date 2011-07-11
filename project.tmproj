@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.html</string>
+	<string>../we-recruit/readme.md</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -123,79 +123,61 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.html</key>
+		<key>../we-recruit/readme.md</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>72</integer>
+				<integer>48</integer>
 				<key>line</key>
-				<integer>50</integer>
+				<integer>4</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>17</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>5</integer>
-				<key>line</key>
-				<integer>50</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>72</integer>
-				<key>line</key>
-				<integer>50</integer>
-			</dict>
+			<integer>0</integer>
 		</dict>
-		<key>src/main/webapp/resources/bubble/css/style.css</key>
+		<key>src/main/scala/curriculum/domain/web/CurriculumVitaePage.scala</key>
 		<dict>
 			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>1</integer>
-				<key>line</key>
-				<integer>14</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>8</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>1</integer>
-				<key>line</key>
-				<integer>14</integer>
-			</dict>
-		</dict>
-		<key>src/main/webapp/resources/bubble/index.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>13</integer>
-				<key>line</key>
-				<integer>116</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>94</integer>
+			<integer>0</integer>
+		</dict>
+		<key>src/main/scala/curriculum/web/page/HtmlPage.scala</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/main/scala/curriculum/web/page/Layout.scala</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>src/main/webapp/resources/cluster.css</key>
 		<dict>
@@ -211,14 +193,44 @@
 			<key>firstVisibleLine</key>
 			<integer>4</integer>
 		</dict>
-		<key>src/main/webapp/resources/cluster.js</key>
+		<key>src/test/scala/curriculum/cluster/netty/ClusterNodeNettySpecs.scala</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>30</integer>
+				<integer>13</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>13</integer>
+			</dict>
+		</dict>
+		<key>src/test/scala/curriculum/cluster/zookeeper/ZookeeperSpecs.scala</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -228,15 +240,16 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>src/main/webapp/resources/cluster.css</string>
-		<string>../we-recruit/com.podprogramming.jobs.WeRecruit/src/main/webapp/WeRecruit.html</string>
-		<string>src/main/webapp/resources/bubble/index.html</string>
-		<string>src/main/webapp/resources/bubble/css/style.css</string>
-		<string>src/main/webapp/resources/cluster.js</string>
+		<string>src/test/scala/curriculum/cluster/netty/ClusterNodeNettySpecs.scala</string>
+		<string>src/test/scala/curriculum/cluster/zookeeper/ZookeeperSpecs.scala</string>
+		<string>src/main/scala/curriculum/domain/web/CurriculumVitaePage.scala</string>
+		<string>src/main/scala/curriculum/web/page/HtmlPage.scala</string>
+		<string>src/main/scala/curriculum/web/page/Layout.scala</string>
+		<string>../we-recruit/readme.md</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{398, 0}, {883, 778}}</string>
+	<string>{{397, 0}, {883, 778}}</string>
 </dict>
 </plist>

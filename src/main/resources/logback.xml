@@ -16,10 +16,12 @@
     <logger name="curriculum.util" level="INFO"/>
     <logger name="curriculum.util.ToJSON" level="DEBUG"/>
     <logger name="curriculum.web" level="DEBUG"/>
-    <logger name="curriculum.cluster" level="DEBUG"/>
     <logger name="curriculum.message" level="INFO"/>
+    <logger name="curriculum.cluster" level="DEBUG"/>
+    <logger name="curriculum.cluster.zookeeper" level="DEBUG"/>
     
     <logger name="org.eclipse.jetty" level="INFO"/>
+    <logger name="org.apache.zookeeper" level="INFO"/>
 
     <root level="warn">
         <appender-ref ref="FILE"/>
