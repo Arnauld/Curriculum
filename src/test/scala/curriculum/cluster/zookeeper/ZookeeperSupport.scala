@@ -4,6 +4,7 @@ import org.apache.zookeeper.ZooDefs.Ids
 import org.apache.zookeeper.{CreateMode, ZooKeeper}
 import org.apache.zookeeper.KeeperException.NodeExistsException
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 trait ZookeeperSupport {
 
@@ -15,11 +16,32 @@ trait ZookeeperSupport {
     zk.create(nodePath, null /*data*/ , Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT)
   }
 
+  def getChildren(zk: ZooKeeper, path: String): Seq[String] = {
+    zk.getChildren(path, false)
+  }
+
+  def delete(zk: ZooKeeper, path: String) {
+    zk.delete(path, -1)
+  }
+
+  def deleteRecursive(zk: ZooKeeper, path: String) {
+    val children = getChildren(zk, path)
+    for (node <- children) {
+      deleteRecursive(zk, path + '/' + node)
+    }
+    delete(zk, path)
+  }
+
+  /**
+   * mkdir -p
+   */
   def createAllIntermediaryMissingNodes(zk: ZooKeeper, nodePath: String, creator: NodeCb) {
-    val parts = (if(nodePath.charAt(0)=='/') 
-					nodePath.substring(1)
-				else
-					nodePath).split("/")
+    val parts = (
+      if (nodePath.charAt(0) == '/')
+        nodePath.substring(1)
+      else
+        nodePath).split("/")
+    
     log.debug("Path <{}> splitted into {}", nodePath, parts)
     parts.foldLeft("")({
       (base, fragment) =>

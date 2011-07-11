@@ -11,6 +11,7 @@ Curriculum: an EAV based curriculum vitae
 * [Google Guava](http://code.google.com/p/guava-libraries/)
 * [Hadoop Zookeeper](http://zookeeper.apache.org/)
 
+
 * [Berkeley DB](http://www.oracle.com/technetwork/database/berkeleydb/overview/index.html) for persistence
 * [Guice](http://code.google.com/p/google-guice/)
 

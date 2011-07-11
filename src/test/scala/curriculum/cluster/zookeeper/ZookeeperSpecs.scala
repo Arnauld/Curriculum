@@ -6,22 +6,32 @@ import java.util.Properties
 import org.apache.zookeeper.server.{ZooKeeperServerMain, ServerConfig}
 import org.apache.zookeeper.server.quorum.{QuorumPeerConfig}
 import curriculum.util.Disposable
+import java.io.File
+import org.apache.commons.io.FileUtils
 
 class ZookeeperSpecs extends Specification {
   val log = LoggerFactory.getLogger(classOf[ZookeeperSpecs])
 
+  // remove existing data
+  val dataDir = new File("target/zookeeper")
+  if(dataDir.exists()) {
+    log.warn("Removing existing zookeeper data")
+    FileUtils.deleteDirectory(dataDir)
+  }
+  log.info("Zookeeper data directory: {}", dataDir)
+
   val props = new Properties()
   props.setProperty("tickTime", 2000.toString)
-  props.setProperty("dataDir", "target/zookeeper")
+  props.setProperty("dataDir", dataDir.getAbsolutePath)
   props.setProperty("clientPort", 2181.toString)
   val qConfig = new QuorumPeerConfig
   qConfig.parseProperties(props)
   val sConfig = new ServerConfig()
   sConfig.readFrom(qConfig)
 
-  var server: Option[ZooKeeperServerMain with Disposable] = None
-  var serverThread: Option[Thread] = None
-  var connection: Option[Connection] = None
+  var serverOpt: Option[ZooKeeperServerMain with Disposable] = None
+  var serverThreadOpt: Option[Thread] = None
+  var connectionOpt: Option[Connection] = None
 
   def startServer() {
     val thread = new Thread(new Runnable {
@@ -32,37 +42,43 @@ class ZookeeperSpecs extends Specification {
             super.shutdown()
           }
         }
+        serverOpt = Some(server)
         server.runFromConfig(sConfig)
       }
     })
-    serverThread = Some(thread)
+    serverThreadOpt = Some(thread)
     thread.start()
   }
 
   "Zookeeper" should {
     doAfter({
-      connection.foreach(_.dispose())
-      server.foreach(_.dispose())
-      serverThread.foreach(_.interrupt())
+      connectionOpt.foreach(_.dispose())
+      serverOpt.foreach(_.dispose())
+      serverThreadOpt.foreach({ t=>
+        t.interrupt()
+        t.join()
+      })
     })
-    "be startable as standalone" in {
+    "manage group easily" in {
       startServer()
       
       val groupName = "travis"
 
-      val service = new Connection with GroupService
+      val service = new Connection with GroupService with ZookeeperSupport
+      connectionOpt = Some(service)
       service.connect("localhost")
       service.createGroup(groupName)
       service.joinGroup(groupName, "vlad")
       service.joinGroup(groupName, "thundercat")
-      val members = service.listGroupMembers("travis")
+      val members = service.listGroupMembers(groupName)
       service.deleteGroup(groupName)
-      members must_== Array("thundercat", "vlad")
+      members must containAll(List("thundercat", "vlad"))
     }
     "manage queue easily" in {
       startServer()
 
       val service = new Connection with QueueService with ZookeeperSupport
+      connectionOpt = Some(service)
       service.connect("localhost")
       service.createQueue("jobs")
       1.to(5).foreach({ i=>

@@ -52,8 +52,10 @@ trait QueueService {
     log.info("Message <{}> published on queue <{}>", created, queueName)
   }
 
-  private def extractSequence(childName: String) =
-    childName.substring(elementSubPath.length()).toLong
+  private def extractSequence(childName: String) = {
+    val seq = childName.substring(elementSubPath.length())
+    (seq, seq.toLong)
+  }
 
   import scala.collection.JavaConversions._
 
@@ -75,14 +77,14 @@ trait QueueService {
       val min = children.foldLeft(initial)({
         (prev, childName) =>
           val seq = extractSequence(childName)
-          if (seq < prev)
+          if (seq._2 < prev._2)
             seq
           else
             prev
       })
-      log.debug("Child with sequence <{}> selected, retrieving data", min)
+      log.debug("Child with sequence <{}> selected, retrieving data", min._1)
 
-      val path = root + "/" + elementSubPath + min
+      val path = root + "/" + elementSubPath + min._1
       val stat:Stat = null
       val data = zk.getData(path, false, stat)
       zk.delete(path, 0)
