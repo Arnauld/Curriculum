@@ -1,10 +1,11 @@
 package curriculum.cluster.zookeeper
 
 import org.apache.zookeeper.ZooDefs.Ids
-import org.apache.zookeeper.{CreateMode, ZooKeeper}
 import org.apache.zookeeper.KeeperException.NodeExistsException
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.apache.zookeeper.data.Stat
+import org.apache.zookeeper.{Watcher, CreateMode, ZooKeeper}
 
 trait ZookeeperSupport {
 
@@ -20,6 +21,11 @@ trait ZookeeperSupport {
     zk.getChildren(path, false)
   }
 
+  def watchChildren(zk: ZooKeeper, path: String, watcher:Watcher) {
+    val stat:Stat = null
+    zk.getChildren(path, watcher, stat)
+  }
+
   def delete(zk: ZooKeeper, path: String) {
     zk.delete(path, -1)
   }
@@ -33,7 +39,7 @@ trait ZookeeperSupport {
   }
 
   /**
-   * mkdir -p
+   * create all the necessary node to reach the nodePath
    */
   def createAllIntermediaryMissingNodes(zk: ZooKeeper, nodePath: String, creator: NodeCb) {
     val parts = (
@@ -52,7 +58,9 @@ trait ZookeeperSupport {
   }
 
   /**
-   * Assumption is done that the parent exists
+   * Create a node if it doesn't exist yet.
+   * Assumption is done that the parent exists.
+   * @see #createAllIntermediaryMissingNodes
    */
   def createNodeIfMissing(zk: ZooKeeper, nodePath: String, creator: NodeCb) {
     try {
@@ -73,5 +81,14 @@ trait ZookeeperSupport {
         // rethrow it: let's the caller handle it
         throw e
     }
+  }
+
+  def getData(zk: ZooKeeper, nodePath: String): Array[Byte] = {
+    val stat:Stat = null
+    zk.getData(nodePath, false, stat)
+  }
+
+  def setData(zk: ZooKeeper, nodePath: String, data: Array[Byte]) {
+    zk.setData(nodePath, data, -1)
   }
 }

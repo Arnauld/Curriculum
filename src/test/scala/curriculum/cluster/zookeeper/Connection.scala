@@ -24,9 +24,9 @@ class Connection extends ZookeeperComponent with Disposable {
    *
    * This method blocks until the connection is established
    */
-  def connect(hosts:String) {
+  def connect(connectString: String) {
     val connectedSignal = new CountDownLatch(1)
-    val zookeeper = new ZooKeeper(hosts, sessionTimeout, new Watcher {
+    val zookeeper = new ZooKeeper(connectString, sessionTimeout, new Watcher {
       def process(event: WatchedEvent) {
         log.info("Event received: " + event)
         if(event.getState == KeeperState.SyncConnected) {
@@ -44,4 +44,3 @@ class Connection extends ZookeeperComponent with Disposable {
 
 }
 
-class ZookeeperAccessException(message:String) extends Exception(message)
