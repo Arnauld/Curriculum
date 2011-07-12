@@ -92,6 +92,12 @@ a.back{
     background:transparent url(images/iconic/lightbulb_20x32_orange.png) no-repeat center center;
 }
 
+/* ~~~ eav ~~~ */
+
+#logs .type-instance-link {
+    background:transparent url(images/iconic/lightbulb_20x32_blue.png) no-repeat center center;
+}
+
 /* ~~~ task ~~~ */
 
 #logs .type-task-scheduled {

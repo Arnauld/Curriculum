@@ -24,6 +24,16 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
 
   var locale = Locale.FRANCE
 
+  override def init(filterConfig: FilterConfig) {
+    super.init(filterConfig)
+    log.info("Filter started!")
+  }
+
+  override def destroy() {
+    log.info("Filter Destoyed!")
+    clusterService.dispose()
+    super.destroy()
+  }
 
 
   /**
@@ -37,7 +47,7 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
   }
 
   /**
-   *
+   * Query message
    */
   get("/msg/list/*") {
     val what = params("splat")
@@ -65,6 +75,7 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
           val keywords = params.get("keywords").getOrElse("").split(",")
           val asyncResult = searchService.search(SearchBySimilitude(inst, keywords, new SearchParameters {}))
           asyncResult.setCallback({ result =>
+            log.debug("Result received! ({} instances)", result.size)
             // let's build clickable results
             publishSearchResult(result)
           })
@@ -82,43 +93,6 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     }
   }
 
-  override def init(filterConfig: FilterConfig) {
-    super.init(filterConfig)
-    log.info("Filter started!")
-  }
-
-  override def destroy() {
-    log.info("Filter Destoyed!")
-    clusterService.dispose()
-    super.destroy()
-  }
-
-  def publishSearchResult(results:List[WeightedInstance]) {
-    MessageQueue.Local.publish(SearchMessage.searchFinished(results.length))
-    results.foreach({inst =>
-      val msg = WebMessage.weightedInstanceLink(inst, "/show/%d")
-      MessageQueue.Local.publish(msg)
-    })
-  }
-
-  def readInstanceFromParams: Option[Instance] = {
-    entityService().getEntity(params("entity").asInstanceOf[String]) match {
-      case None =>
-        None
-      case Some(e) =>
-        val inst = e.newInstance
-        e.getAttributes.values.foreach({
-          a =>
-            params.get("instance." + a.attributeName) match {
-              case None => // no value for attributes
-              case Some(v) =>
-                inst.setAttributeValue(a.attributeName, v)
-            }
-        })
-        Some(inst)
-    }
-  }
-
   /**
    * Start a node
    */
@@ -132,6 +106,16 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
       ClusterMessage.nodeStarting(node).toLocaleAware)
     response.setStatus(200)
     """{ "task_id":""" + task.taskId + "}";
+  }
+
+  /**
+   * list nodes
+   */
+  get("/cluster/list") {
+    val nodes = clusterService.listNodes
+    MessageQueue.Local.publish(ClusterMessage.nodesRunningWeb(nodes))
+    response.setStatus(200)
+    ""
   }
 
   /**
@@ -154,7 +138,9 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     showCV
   }
 
-  def showCV:NodeSeq = {
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  private def showCV:NodeSeq = {
     val instance = instanceReader.loadInstance(CurriculumVitaeInstances.Arnauld)
 
     /*
@@ -163,6 +149,32 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     val page = new CurriculumVitaePage(instance)
     val layout = new Layout {}
     layout.render(page.content)
+  }
+
+  private def publishSearchResult(results:List[WeightedInstance]) {
+    MessageQueue.Local.publish(SearchMessage.searchFinished(results.length))
+    results.foreach({inst =>
+      val msg = WebMessage.weightedInstanceLink(inst, "/show/%d")
+      MessageQueue.Local.publish(msg)
+    })
+  }
+
+  private def readInstanceFromParams: Option[Instance] = {
+    entityService().getEntity(params("entity").asInstanceOf[String]) match {
+      case None =>
+        None
+      case Some(e) =>
+        val inst = e.newInstance
+        e.getAttributes.values.foreach({
+          a =>
+            params.get("instance." + a.attributeName) match {
+              case None => // no value for attributes
+              case Some(v) =>
+                inst.setAttributeValue(a.attributeName, v)
+            }
+        })
+        Some(inst)
+    }
   }
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

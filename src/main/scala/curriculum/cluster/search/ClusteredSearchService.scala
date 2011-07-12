@@ -1,5 +1,7 @@
 package curriculum.cluster.search
 
+
+import org.slf4j.LoggerFactory
 import curriculum.cluster.{ClusterJob, ClusterService}
 import java.io.{DataInputStream, DataOutputStream}
 import curriculum.message.MessageQueue
@@ -11,6 +13,8 @@ import curriculum.util.{ToJSON, SearchParameters}
 trait ClusteredSearchService extends SearchService {
   self:ClusterService =>
 
+  private val log = LoggerFactory.getLogger(classOf[ClusteredSearchService])
+
   def search(criteria:SearchBySimilitude) = {
     MessageQueue.Local.publish(SearchMessage.searchBySimilitude(criteria.instance, criteria.keywords))
 
@@ -21,6 +25,7 @@ trait ClusteredSearchService extends SearchService {
       def actionName = "searchBySimilitude"
 
       def readResponse(in: DataInputStream) {
+        log.debug("Reading response for search")
         val values = ToJSON.valuesFromJson(in, classOf[WeightedInstance])
         result = Some(values)
         callback match {
@@ -31,6 +36,9 @@ trait ClusteredSearchService extends SearchService {
 
       def setCallback(c: (List[WeightedInstance]) => Any) {
         callback = Some(c)
+        // response already there?
+        if(isDone)
+          c(result.get)
       }
 
       def writeQuery(out: DataOutputStream) {

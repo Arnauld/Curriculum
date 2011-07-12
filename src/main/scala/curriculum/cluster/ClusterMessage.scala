@@ -22,6 +22,18 @@ object ClusterMessage {
 
   }
 
+  def nodesRunningWeb(nodes: Iterable[ClusterNode]) = {
+    var builder = new StringBuilder("Noeuds en attente de connexion:")
+    builder.append("<ul>")
+    nodes.foreach({n =>
+        builder.append("<li><b>").append(n.name).append("</b>")
+               .append(" sur ")
+               .append(n.address).append(":").append(n.port).append("</li>")
+    })
+    builder.append("</ul>")
+    Message(Type.NodeRunning, Message.code(builder.toString))
+  }
+
   def noNodeRunning() = {
     Message(Type.NoNodeRunning, Message.code("<b>Aucun noeud disponible</b>. En tant qu'administrateur vous devriez en allumer un!"))
   }

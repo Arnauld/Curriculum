@@ -156,6 +156,7 @@ object CurriculumVitaeInstances {
               <attribute name="title">Java</attribute>
               <attribute name="level">100/100</attribute>
               <attribute name="level_comment">SE 11ans/EE 3ans</attribute>
+              <attribute name="comment">Java SE, Java EE, Groovy, Scala</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">
@@ -175,14 +176,14 @@ object CurriculumVitaeInstances {
           <instance type="curriculum:skill">
             <attributes>
               <attribute name="title">Frameworks, Librairies</attribute>
-              <attribute name="level">70/100</attribute>
+              <attribute name="level">80/100</attribute>
               <attribute name="comment">Hibernate, Spring, Quartz, Struts 1&amp;2, WebServices...</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:skill">
             <attributes>
               <attribute name="title">Agilité</attribute>
-              <attribute name="level">65/100</attribute>
+              <attribute name="level">75/100</attribute>
               <attribute name="level_comment">~3ans</attribute>
               <attribute name="comment">Sensibilisé ~2004, XP, Scrum, Mingle, post-it...</attribute>
             </attributes>
@@ -236,7 +237,7 @@ object CurriculumVitaeInstances {
               <attribute name="title">Software design and architecture</attribute>
               <attribute name="level">100/100</attribute>
               <attribute name="level_comment">~9ans</attribute>
-              <attribute name="comment">Domain driven design, patterns, MDdays 2009, Devoxx2010...</attribute>
+              <attribute name="comment">DDD, patterns, MDdays 2009, Devoxx2010...</attribute>
             </attributes>
           </instance>
           <instance type="curriculum:interest">

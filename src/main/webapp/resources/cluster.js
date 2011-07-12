@@ -28,12 +28,31 @@ $(function() {
         $this.find('a:first,h2').removeClass('active');
     });
 
+    var predefined = [ {
+    	name:"Puck",
+    	port:9001
+    }, {
+    	name:"Oberon",
+    	port:9002
+    }, {
+    	name:"Titania",
+    	port:9003
+    }];
+    var predefinedIndex = 0;
+
     $("#start-node").click(function () {
+    	var params = predefined[predefinedIndex % predefined.length];
+    	predefinedIndex++;
         cluster.send('POST', "/cluster/start", {
-                "start-node-name":"McCallum",
-                "start-node-port":9001
+                "start-node-name":params["name"],
+                "start-node-port":params["port"]
          });
     });
+
+    $("#list-nodes").click(function () {
+        cluster.send('POST', "/cluster/list", {});
+    });
+
     
     $("#search").click(function () {
         cluster.send('GET', "/search", {
@@ -54,14 +73,13 @@ var cluster = {
     log: function(message) {
         var $msg = cluster.formatMessage(message);
         $msg.hide();
+        $msg.attr("displayedAt", new Date().getTime());
 
         var messages = $("#logs div.message");
         // remove the tops elements
         if(messages.length>=cluster.logMaxSize) {
             var overflow = messages.slice(0, messages.length-cluster.logMaxSize+1);
-            overflow.fadeOut(300, function () {
-                $(this).remove();
-            });
+            cluster.removeMessage(overflow);
         }
         $("#logs").append($msg);
         $msg.hover(function () {
@@ -77,6 +95,25 @@ var cluster = {
             $("#display").append("<iframe src='" + $this.attr("href") + "' width='630px' height='800px'></iframe>");
             $("#logs").stop().animate({"left":"650px"}, 1000, "swing");
             return false;
+        });
+    },
+
+	removeMessage: function($msg) {
+        $msg.fadeOut(300, function () {
+            $(this).remove();
+        });
+    },
+
+    removeObsoleteMessages: function() {
+        var threshold = new Date().getTime() - 20*1000;//20secs
+        $("#logs div.message").each(function(index,msg) {
+            var $msg = $(msg);
+            var displayedAt = $msg.attr("displayedAt");
+            console.log("Comparing " + displayedAt + " with " + threshold);
+            if(displayedAt<threshold) {
+                console.log("Removing")
+                cluster.removeMessage($msg);
+            }
         });
     },
 
@@ -128,10 +165,11 @@ var cluster = {
      * TODO: replace by long polling
      */
     waitForMessage: function () {
-        console.log("waitForMessage isPolling: " + cluster.isPolling);
         if(cluster.isPolling)
             return;
         cluster.isPolling = true;
+
+        cluster.removeObsoleteMessages();
 
         cluster.tickCount = cluster.tickCount + 1;
         var elligible =   (cluster.numberOfCallsWithoutMessage==0)
@@ -139,7 +177,6 @@ var cluster = {
                         ||(cluster.numberOfCallsWithoutMessage<5 && cluster.tickCount%5 == 0)
                         ||(cluster.tickCount%10 == 0);
 
-        console.log("waitForMessage elligible: " + elligible);
         if(elligible)
             cluster.pollMessages();
         cluster.isPolling = false;

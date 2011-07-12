@@ -90,6 +90,8 @@ trait ClusterService {
   val roundRobin = new AtomicLong()
 
   private[cluster] def dispatchJobs() {
+    log.debug("Dispatching jobs ({} in queue)", jobsToDispatch.size())
+
     val availables = this.listNodes.toArray
     val nbAvailable = availables.length
     if(nbAvailable==0) {
@@ -98,12 +100,15 @@ trait ClusterService {
     else {
       var job = jobsToDispatch.poll()
       while(job!=null) {
-        val choosenNode = (roundRobin.incrementAndGet()%nbAvailable).toInt
+        val choosenNodeIndex = (roundRobin.incrementAndGet()%nbAvailable).toInt
+        val choosenNode = availables(choosenNodeIndex)
         val jobId = dispatchIdGen.incrementAndGet()
+
+        log.debug("Dispatching job {} to {}", jobId, choosenNode.name)
 
         // keep dispatched job, waiting the response
         dispatchedJob.put(jobId, job)
-        Http.post(jobId, availables(choosenNode), job)
+        Http.post(jobId, choosenNode, job)
 
         //
         job = jobsToDispatch.poll()

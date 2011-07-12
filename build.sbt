@@ -8,7 +8,9 @@ scalaVersion := "2.9.0-1"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-seq(WebPlugin.webSettings :_*)
+seq((WebPlugin.webSettings++Seq(
+  jettyPort := 8081
+)) :_*)
 
 retrieveManaged := true // remove this once plugins are working or i understand their layout
 
