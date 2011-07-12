@@ -46,6 +46,9 @@ render instance.
 'curriculum/util' contains several utilities. The two most interestings are `HasLabel` and `HasHtmlDescription` used
 to have a basic support for localization of models.
 
+'curriculum/message' provides base classes for i18n of internal message bus. The messages posted in the 'local' bus 
+are periodically fetched by the browser and displayed to the user.
+
 ### Web and page rendering
 
 Web support is provided by the use of *scalatra* (entry point `CurriculumFilter`) and XML manipulation for page rendering.
@@ -54,6 +57,14 @@ Currently the page rendering is based on raw html (manipulated as xml). This has
 
 * understand how to manipulate XML through scala: read, write, xpath, merge...
 * since XML support is builtin in scala. A lot of data navigation issues is detected early at compilation.
+
+
+### Cluster
+
+Cluster support includes
+
+* Simulation of node start by starting embedded netty server
+
 
 ## Roadmap
 
