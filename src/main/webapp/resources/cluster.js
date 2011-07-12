@@ -50,7 +50,7 @@ $(function() {
     });
 
     $("#list-nodes").click(function () {
-        cluster.send('POST', "/cluster/list", {});
+        cluster.send('GET', "/cluster/list", {});
     });
 
     

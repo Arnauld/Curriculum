@@ -49,7 +49,7 @@ object CurriculumVitaeModels {
             <label locale="fr_FR">Mél</label>
           </labels>
         </attribute>
-        <attribute name="twitter" type="dt:link">
+        <attribute name="twitter" type="dt:text">
           <labels>
             <label locale="fr_FR">Twitter</label>
           </labels>
