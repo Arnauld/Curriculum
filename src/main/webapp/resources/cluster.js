@@ -109,9 +109,7 @@ var cluster = {
         $("#logs div.message").each(function(index,msg) {
             var $msg = $(msg);
             var displayedAt = $msg.attr("displayedAt");
-            console.log("Comparing " + displayedAt + " with " + threshold);
             if(displayedAt<threshold) {
-                console.log("Removing")
                 cluster.removeMessage($msg);
             }
         });

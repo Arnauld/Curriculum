@@ -2,7 +2,7 @@ name := "curriculum"
 
 organization := "org.technbolts"
 
-version := "0.0.2-SNAPSHOT"
+version := "0.0.3-SNAPSHOT"
 
 scalaVersion := "2.9.0-1"
 
@@ -17,6 +17,13 @@ retrieveManaged := true // remove this once plugins are working or i understand 
 publishMavenStyle := true
 
 publishTo := Some(Resolver.file("Local", Path.userHome / "Projects" / "arnauld.github.com" / "maven2" asFile)(Patterns(true, Resolver.mavenStyleBasePattern)))
+
+
+resourceGenerators in Compile <+= resourceManaged in Compile map { dir =>
+  val file = dir / "build.properties"
+  IO.write(file, """buildAt="""+(new java.util.Date()))
+  Seq(file)
+}
 
 javaOptions in (run) += "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
 

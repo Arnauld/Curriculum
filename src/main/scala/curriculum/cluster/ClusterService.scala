@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong
 trait ClusterService {
   private val log = LoggerFactory.getLogger(classOf[ClusterService])
   private var nodes = Map[ClusterNode, ClusterNodeNetty]()
-  private val jobsToDispatch = new LinkedBlockingQueue[ClusterJob]
+  private val jobsToDispatch = new LinkedBlockingQueue[(Long,ClusterJob)]
   private val dispatchedJob = new ConcurrentHashMap[Long,ClusterJob]()
   private val dispatchIdGen = new AtomicLong()
 
@@ -81,7 +81,9 @@ trait ClusterService {
   }
 
   def dispatchJob[T](job:ClusterJob) {
-    jobsToDispatch.add(job)
+    val jobId = dispatchIdGen.incrementAndGet()
+    jobsToDispatch.add((jobId,job))
+    MessageQueue.Local.publish(ClusterMessage.enqueuingJob(jobId, job))
 
     // TODO: move me in an actor based to have a single and async thread that dispatch
     dispatchJobs()
@@ -98,20 +100,21 @@ trait ClusterService {
       MessageQueue.Local.publish(ClusterMessage.noNodeRunning())
     }
     else {
-      var job = jobsToDispatch.poll()
-      while(job!=null) {
+      var t = jobsToDispatch.poll()
+      while(t!=null) {
+        val (jobId,job) = t
         val choosenNodeIndex = (roundRobin.incrementAndGet()%nbAvailable).toInt
         val choosenNode = availables(choosenNodeIndex)
-        val jobId = dispatchIdGen.incrementAndGet()
 
         log.debug("Dispatching job {} to {}", jobId, choosenNode.name)
+        MessageQueue.Local.publish(ClusterMessage.dispatchingJob(jobId, choosenNode))
 
         // keep dispatched job, waiting the response
         dispatchedJob.put(jobId, job)
         Http.post(jobId, choosenNode, job)
 
         //
-        job = jobsToDispatch.poll()
+        t = jobsToDispatch.poll()
       }
     }
   }

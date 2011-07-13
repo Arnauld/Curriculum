@@ -20,18 +20,34 @@ object ClusterMessage {
 
     case object NodeStartError extends Message.Type("type-node-start-error")
 
+    case object DispatchingJob extends Message.Type("type-dispatching-job")
+
+  }
+
+  def enqueuingJob(jodId:Long, job: ClusterJob) = {
+    Message(Type.DispatchingJob, Message.code("Job %d planifié"), jodId)
+  }
+
+  def dispatchingJob(jodId:Long, node: ClusterNode) = {
+    Message(Type.DispatchingJob, Message.code("Job %d distribué au noeud %s"), jodId, node.name)
   }
 
   def nodesRunningWeb(nodes: Iterable[ClusterNode]) = {
-    var builder = new StringBuilder("Noeuds en attente de connexion:")
-    builder.append("<ul>")
-    nodes.foreach({n =>
-        builder.append("<li><b>").append(n.name).append("</b>")
-               .append(" sur ")
-               .append(n.address).append(":").append(n.port).append("</li>")
-    })
-    builder.append("</ul>")
-    Message(Type.NodeRunning, Message.code(builder.toString))
+    val message = 
+        if(nodes.isEmpty)
+            "Aucun noeud n'est actuellement démarré"
+        else {
+            var builder = new StringBuilder("Noeuds en attente de connexion:")
+            builder.append("<ul>")
+            nodes.foreach({n =>
+                builder.append("<li><b>").append(n.name).append("</b>")
+                       .append(" sur ")
+                       .append(n.address).append(":").append(n.port).append("</li>")
+            })
+            builder.append("</ul>")
+            builder.toString
+        }
+    Message(Type.NodeRunning, Message.code(message))
   }
 
   def noNodeRunning() = {

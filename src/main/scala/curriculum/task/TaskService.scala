@@ -40,7 +40,7 @@ trait TaskService {
   }
 
   def spawn(r: RunnableWithProgress, details:LocaleAware): Task = {
-    val task = new InternalTask(idGen.incrementAndGet(), r)
+    val task = new InternalTask(idGen.incrementAndGet(), r, details)
     MessageQueue.Local.publish(TaskMessage.taskScheduled(task, details))
     executor.submit(task)
     synchronized {
@@ -49,7 +49,7 @@ trait TaskService {
     task
   }
 
-  class InternalTask(id: Long, r: RunnableWithProgress) extends SimpleTask(id) with ProgressMonitor with Runnable {
+  class InternalTask(id: Long, r: RunnableWithProgress, details:LocaleAware) extends SimpleTask(id) with ProgressMonitor with Runnable {
     private[task] var marked = false
 
     override def beginTask(name: String, amount: Int) {
@@ -61,6 +61,7 @@ trait TaskService {
     }
 
     override def done() {
+      MessageQueue.Local.publish(TaskMessage.taskDone(this, details))
       status = TaskStatus.Done
     }
 

@@ -10,4 +10,7 @@ object TaskMessage {
   def taskScheduled(task:Task, details:Any = "") = {
     Message(Type.TaskScheduled, Message.code("Tache %d lancée: %s"), task.taskId, details)
   }
+  def taskDone(task:Task, details:Any = "") = {
+    Message(Type.TaskDone, Message.code("Tache %d terminée: %s"), task.taskId, details)
+  }
 }

@@ -35,7 +35,6 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
     super.destroy()
   }
 
-
   /**
    * test
    */
@@ -50,18 +49,24 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
    * Query message
    */
   get("/msg/list/*") {
-    val what = params("splat")
-    log.debug("Message list queried: {}, {}", params, what)
-    val lowerBound = what.toLong
-    var msgs = MessageQueue.Local.listMessages(lowerBound)
-    var retry = 1
-    while(msgs.isEmpty && retry<3) {
-      retry = retry+1
-      Thread.sleep(500)
-      msgs = MessageQueue.Local.listMessages(lowerBound, 1)
+    try {
+        val what = params("splat")
+        log.debug("Message list queried: {}, {}", params, what)
+        val lowerBound = what.toLong
+        var msgs = MessageQueue.Local.listMessages(lowerBound)
+        var retry = 1
+        while(msgs.isEmpty && retry<3) {
+          retry = retry+1
+          Thread.sleep(500)
+          msgs = MessageQueue.Local.listMessages(lowerBound, 1)
+        }
+        contentType = "text/json"
+        ToJSON.toJSONString(msgs)
+    } catch {
+      case e: Throwable =>
+        log.error("Oooops", e)
+        throw e
     }
-    contentType = "text/json"
-    ToJSON.toJSONString(msgs)
   }
 
   /**
@@ -97,25 +102,38 @@ class CurriculumFilter extends ScalatraFilter with ResourceSupport with Services
    * Start a node
    */
   post("/cluster/start") {
-    log.debug("Cluster node start: {}", params)
-    val nodeName = params("start-node-name")
-    val nodePort = params("start-node-port")
-    val node = ClusterNode(nodeName, nodePort.toInt, Map[String, Any]())
-    val task = taskService.spawn(
-      clusterService.startNodeRunnable(node),
-      ClusterMessage.nodeStarting(node).toLocaleAware)
-    response.setStatus(200)
-    """{ "task_id":""" + task.taskId + "}";
+    try{
+        log.debug("Cluster node start: {}", params)
+        val nodeName = params("start-node-name")
+        val nodePort = params("start-node-port")
+        val node = ClusterNode(nodeName, nodePort.toInt, Map[String, Any]())
+        val task = taskService.spawn(
+          clusterService.startNodeRunnable(node),
+          ClusterMessage.nodeStarting(node).toLocaleAware)
+        response.setStatus(HttpStatus.SC_ACCEPTED)
+        """{ "task_id":""" + task.taskId + "}";
+    } catch {
+      case e: Throwable =>
+        log.error("Oooops", e)
+        throw e
+    }
   }
 
   /**
    * list nodes
    */
   get("/cluster/list") {
-    val nodes = clusterService.listNodes
-    MessageQueue.Local.publish(ClusterMessage.nodesRunningWeb(nodes))
-    response.setStatus(200)
-    ""
+    try{
+        log.debug("List of nodes queried")
+        val nodes = clusterService.listNodes
+        MessageQueue.Local.publish(ClusterMessage.nodesRunningWeb(nodes))
+        response.setStatus(HttpStatus.SC_ACCEPTED)
+        ""
+    } catch {
+      case e: Throwable =>
+        log.error("Oooops", e)
+        throw e
+    }
   }
 
   /**
