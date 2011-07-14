@@ -113,6 +113,7 @@ a.back{
 #logs .type-search-started {
     background:transparent url(images/iconic/magnifying_glass_32x32_blue.png) no-repeat center center;
 }
+
 #logs .type-search-done {
     background:transparent url(images/iconic/lightbulb_20x32_blue.png) no-repeat center center;
 }
@@ -148,4 +149,3 @@ a.back{
 #logs .type-node-started {
     background:transparent url(images/iconic/cloud_32x20_green.png) no-repeat center center;
 }
-
