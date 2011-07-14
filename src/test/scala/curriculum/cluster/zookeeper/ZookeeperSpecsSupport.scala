@@ -7,6 +7,7 @@ import org.apache.zookeeper.server.quorum.QuorumPeerConfig
 import org.apache.zookeeper.server.{ZooKeeperServerMain, ServerConfig}
 import curriculum.util.Disposable
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CountDownLatch
 
 /**
  * provides support for testing Zookeeper
@@ -14,8 +15,7 @@ import org.slf4j.LoggerFactory
 trait ZookeeperSpecsSupport {
   private val log = LoggerFactory.getLogger(classOf[ZookeeperSpecsSupport])
 
-  var serverOpt: Option[ZooKeeperServerMain with Disposable] = None
-  var serverThreadOpt: Option[Thread] = None
+  var serverOpt: Option[ZookeeperServerSupport] = None
 
   /**
    * Zookeeper data directory, path is based on class name to prevent
@@ -50,32 +50,15 @@ trait ZookeeperSpecsSupport {
   }
 
   def stopZookeeperServer() {
-    serverOpt.foreach(_.dispose())
-    serverThreadOpt.foreach({
-      t =>
-        try {
-          t.interrupt()
-        }
-        finally {
-          t.join()
-        }
+    serverOpt.foreach({ zk =>
+      zk.shutdown()
+      zk.awaitTermination()
     })
   }
 
   def startZookeeperServer() {
-    val thread = new Thread(new Runnable {
-      def run() {
-        log.info("Starting zookeeper")
-        val server = new ZooKeeperServerMain() with Disposable {
-          def dispose() {
-            super.shutdown()
-          }
-        }
-        serverOpt = Some(server)
-        server.runFromConfig(createZookeeperConfig())
-      }
-    })
-    serverThreadOpt = Some(thread)
-    thread.start()
+    val server = new ZookeeperServerSupport()
+    serverOpt = Some(server)
+    server.start(createZookeeperConfig())
   }
 }

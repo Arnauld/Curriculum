@@ -4,9 +4,9 @@ import org.slf4j.LoggerFactory
 import org.apache.zookeeper.ZooDefs.Ids
 import org.apache.zookeeper.KeeperException.NodeExistsException
 import java.util.concurrent.locks.ReentrantLock
-import java.util.concurrent.atomic.AtomicBoolean
 import org.apache.zookeeper.{WatchedEvent, Watcher, CreateMode}
 import java.util.concurrent.{CountDownLatch, TimeUnit}
+import java.util.concurrent.atomic.{AtomicLong, AtomicBoolean}
 
 trait Listener {
   def onEvent(data: Array[Byte])
@@ -27,6 +27,10 @@ trait QueueService {
    * Create a queue with name <code>queueName</code> if it does not already exists.
    */
   def createQueue(queueName: String) {
+    createQueueOnZookeeper(queueName)
+  }
+
+  private[zookeeper] def createQueueOnZookeeper(queueName: String) {
     val zk = zookeeperOrFail
     val path = pathForQueue(queueName)
     try {
@@ -117,10 +121,13 @@ trait QueueService {
    */
   def getQueue(queueName: String): Queue = synchronized {
     queues.get(queueName).getOrElse({
+      log.debug("Queue "+queueName+" not registered yet", new Exception("current stack"))
       val q = new Queue(queueName, this, this)
       queues += (queueName -> q)
+
+      log.debug("Queue registry containing {}? {}", queueName, queues.contains(queueName))
       // create the corresponding node
-      createQueue(queueName)
+      createQueueOnZookeeper(queueName)
       q.start()
       q
     })
@@ -137,6 +144,7 @@ object Queue {
       log.error("Error on queue <" + t.getName +">", e)
     }
   }
+  val seqGen = new AtomicLong()
 }
 
 class Queue(val queueName: String,
@@ -179,27 +187,47 @@ class Queue(val queueName: String,
     queueService.consumeOne(queueName)
   }
 
+  private var threadOpt:Option[Thread] = None
+
   private[zookeeper] def start() {
-    new Thread(Queue.queueThreadGroup, new Runnable {
-      def run() {
-        loop()
-      }
-    }, queueName).start()
+    running.get() match {
+      case false =>
+        val thread = new Thread(Queue.queueThreadGroup, new Runnable {
+          def run() {
+            qlog.info("Starting queue {} ({})", queueName, Thread.currentThread())
+            try {
+              loop()
+            }
+            finally {
+              qlog.info("Queue {} stopped! ({})", queueName, Thread.currentThread())
+            }
+          }
+        }, queueName + "-" + Queue.seqGen.incrementAndGet())
+        threadOpt = Some(thread)
+        thread.start()
+        qlog.debug("Queue {} thread started: {}", queueName, thread)
+      case true =>
+        qlog.debug("Queue {} already running", queueName)
+    }
   }
 
-  def stop() {
+  private[zookeeper] def stop() {
+    qlog.info("Stoping queue {}", queueName)
     running.set(false)
     withinLock({
       // wake up every body
       noListener.signal()
     });
+
+    threadOpt.foreach({ t =>
+      qlog.debug("Waiting for {} to stop", t)
+      t.join()
+    })
   }
 
   var waitTimeoutMillis = 100
 
   private def loop() {
-    qlog.info("Starting queue {}", queueName)
-
     running.set(true)
 
     var currentLatch: Option[CountDownLatch] = None
@@ -224,6 +252,7 @@ class Queue(val queueName: String,
         consumeOne() match {
           case None =>
             // no event: wait until a new event is added to the queue or wait timeout
+            qlog.debug("No event yet in queue {}, wait for new event to dispatch", queueName)
 
             val latch = currentLatch match {
               // prevent multiple latch, if one is already defined, just reuse it as barrier

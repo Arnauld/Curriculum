@@ -84,6 +84,12 @@ jetty
         ~sbt> jetty-run
 
 
+## Sbt
+
+switch to offline mode
+
+        set offline:=true
+
 JSON
 ==============================================
 
