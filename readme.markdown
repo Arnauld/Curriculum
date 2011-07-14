@@ -58,13 +58,25 @@ Currently the page rendering is based on raw html (manipulated as xml). This has
 * understand how to manipulate XML through scala: read, write, xpath, merge...
 * since XML support is builtin in scala. A lot of data navigation issues is detected early at compilation.
 
+### Message and Queue
+
+Message is a localized support the notificatin within the application.
+Currently the message queue is a one for all, with in-memory persistance. Plan is to add support for a
+standard queue system such as ActiveMQ (RabbitMQ would have been well suitable but it lacks an embedded
+support in Java).
+
+Messages are regulary polled within javascript 'cluster.js' and logged. Type of message is used for
+icon rendering through css.
+
 
 ### Cluster
 
 Cluster support includes
 
 * Simulation of node start by starting embedded netty server
+* Round robin job distribution among started node
 
+Plan is to move the cluster nodes and job queue to zookeeper.
 
 ## Roadmap
 

@@ -38,14 +38,12 @@ object ClusterMessage {
             "Aucun noeud n'est actuellement démarré"
         else {
             var builder = new StringBuilder("Noeuds en attente de connexion:")
-            builder.append("<ul>")
             nodes.foreach({n =>
-                builder.append("<li><b>").append(n.name).append("</b>")
-                       .append(" sur ")
-                       .append(n.address).append(":").append(n.port).append("</li>")
+                builder.append("<b>").append(n.name).append("</b>")
+                       .append(" (")
+                       .append(n.address).append(":").append(n.port).append("), ")
             })
-            builder.append("</ul>")
-            builder.toString
+            builder.toString()
         }
     Message(Type.NodeRunning, Message.code(message))
   }
