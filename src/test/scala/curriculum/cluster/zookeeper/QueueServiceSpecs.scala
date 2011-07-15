@@ -35,7 +35,6 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
     })
 
     "work in simple case: listener registered after events" in {
-      skip("what")
       val service = new Connection with QueueService with ZookeeperSupport
       connectionOpt = Some(service)
       service.connect("localhost:" + clientPort)
@@ -44,7 +43,7 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
       queueOpt = Some(queue)
       publishData(queue)
 
-      queue.register(listener)
+      queue.addListener(listener)
 
       while (queue.hasEvents) {
         Thread.sleep(50)
@@ -53,7 +52,6 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
     }
 
     "work in simple case: listener registered before events" in {
-      skip("what")
       val service = new Connection with QueueService with ZookeeperSupport
       connectionOpt = Some(service)
       service.connect("localhost:" + clientPort)
@@ -61,7 +59,7 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
       val queue = service.getQueue(queueName)
       queueOpt = Some(queue)
       val listener = new Collector
-      queue.register(listener)
+      queue.addListener(listener)
 
       publishData(queue)
 
@@ -72,7 +70,7 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
     }
 
     "work in complex case: simulate the same queue used through multiple connection" in {
-      val nbParticipants = 1
+      val nbParticipants = 5
       val ccases = new ConcurrentCases(nbParticipants)
 
       0.until(nbParticipants).foreach({
@@ -81,7 +79,7 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
             def run() {
               ccases.execute(i)
             }
-          }).start
+          }).start()
       })
       ccases.awaitTermination()
     }
@@ -110,7 +108,7 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
           case 0 =>
             1.to(200).foreach({i => publishData(queue) })
           case 1 =>
-            queue.register(listener)
+            queue.addListener(listener)
         }
         endBarrier.await()
       }
@@ -136,7 +134,7 @@ class QueueServiceSpecs extends Specification with ZookeeperSpecsSupport {
     }
   }
 
-  class Collector extends Listener {
+  class Collector extends QueueListener {
     var events: List[String] = Nil
 
     def onEvent(data: Array[Byte]) {

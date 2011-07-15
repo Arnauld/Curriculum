@@ -7,17 +7,17 @@ import java.util.concurrent.locks.ReentrantLock
 import org.apache.zookeeper.{WatchedEvent, Watcher, CreateMode}
 import java.util.concurrent.{CountDownLatch, TimeUnit}
 import java.util.concurrent.atomic.{AtomicLong, AtomicBoolean}
+import scala.collection.JavaConversions._
 
-trait Listener {
-  def onEvent(data: Array[Byte])
-}
 
 trait QueueService {
-  self: ZookeeperComponent with ZookeeperSupport =>
+  self: ZookeeperSupport =>
 
   private val log = LoggerFactory.getLogger(classOf[QueueService])
   private val elementSubPath = "element-"
   private val queueRoot = "/queues"
+
+  private var queues: Map[String, Queue] = Map.empty
 
   def pathForQueue(queueName: String) = queueRoot + "/" + queueName
 
@@ -31,16 +31,14 @@ trait QueueService {
   }
 
   private[zookeeper] def createQueueOnZookeeper(queueName: String) {
-    val zk = zookeeperOrFail
     val path = pathForQueue(queueName)
     try {
-      val stat = zk.exists(path, false)
-      if (stat == null) {
-        ensurePathExists(zk, path, persistentEmptyNodeCreator)
-        log.info("Queue " + queueName + " created")
+      if (exists(path)) {
+        log.info("Queue <{}> already exists: creation skipped", queueName)
       }
       else {
-        log.info("Queue <{}> already exists: creation skipped", queueName)
+        ensurePersistentPathExists(path)
+        log.info("Queue " + queueName + " created")
       }
     }
     catch {
@@ -57,9 +55,8 @@ trait QueueService {
    *
    */
   def publish(queueName: String, data: Array[Byte]) {
-    val zk = zookeeperOrFail
     val path = pathForQueue(queueName) + "/" + elementSubPath
-    val created = zk.create(path, data, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL)
+    val created = createPersistentSequential(path, data, true)
     log.info("Message <{}> published on queue <{}>", created, queueName)
   }
 
@@ -73,20 +70,16 @@ trait QueueService {
    */
   def hasEvents(queueName: String): Boolean = {
     val root = pathForQueue(queueName)
-    val zk = zookeeperOrFail
-    val children = zk.getChildren(root, true);
+    val children = getChildren(root);
     !children.isEmpty
   }
-
-  import scala.collection.JavaConversions._
 
   /**
    *
    */
   def consumeOne(queueName: String): Option[Array[Byte]] = {
     val root = pathForQueue(queueName)
-    val zk = zookeeperOrFail
-    val children = zk.getChildren(root, true);
+    val children = getChildren(root);
     if (children.isEmpty) {
       None
     }
@@ -107,14 +100,12 @@ trait QueueService {
       log.debug("Child with sequence <{}> selected, retrieving data", min._1)
 
       val path = pathForEntry(queueName, min._1)
-      val data = getData(zk, path)
-      delete(zk, path)
+      val data = getData(path)
+      delete(path)
 
       Some(data)
     }
   }
-
-  private var queues: Map[String, Queue] = Map.empty
 
   /**
    * Get a queue. If the queue does not exists yet it is created.
@@ -147,28 +138,30 @@ object Queue {
 
 class Queue(val queueName: String,
             val queueService:QueueService,
-            private val zkComponent:ZookeeperComponent) extends ZookeeperSupport {
+            private val zk:ZookeeperSupport) {
 
   private val qlog = LoggerFactory.getLogger(classOf[Queue])
 
   import curriculum.util.LockSupport._
 
-  var listeners: List[Listener] = Nil
+  var listeners: List[QueueListener] = Nil
   val running = new AtomicBoolean
+  var waitTimeoutMillis = 100
+
   //
   implicit val lock = new ReentrantLock()
   val noListener = lock.newCondition()
 
-  def register(listener: Listener) {
+  def addListener(listener: QueueListener) {
     qlog.debug("Registering listener on queue {}", queueName)
     withinLock({
       listeners = listener :: listeners
       noListener.signal()
     })
-    qlog.debug("Listener registered on queue {}", queueName)
+    qlog.debug("QueueListener registered on queue {}", queueName)
   }
 
-  def unregister(listener: Listener) {
+  def removeListener(listener: QueueListener) {
     withinLock({
       listeners = listeners.filter(_ != listener)
       noListener.signal()
@@ -223,14 +216,12 @@ class Queue(val queueName: String,
     })
   }
 
-  var waitTimeoutMillis = 100
-
   private def loop() {
     running.set(true)
 
     var currentLatch: Option[CountDownLatch] = None
     while (running.get) {
-      var lstnrs: List[Listener] = Nil
+      var lstnrs: List[QueueListener] = Nil
 
       withinLock({
         if (listeners.isEmpty) {
@@ -258,7 +249,7 @@ class Queue(val queueName: String,
                 cdl
               case None =>
                 val cdl = new CountDownLatch(1)
-                watchChildren(zkComponent.zookeeperOrFail, queueService.pathForQueue(queueName), new Watcher {
+                zk.watchChildren(queueService.pathForQueue(queueName), new Watcher {
                   def process(event: WatchedEvent) {
                     cdl.countDown()
                   }

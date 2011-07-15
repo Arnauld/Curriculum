@@ -26,7 +26,7 @@ trait Group {
 }
 
 trait GroupService {
-  self: Connection with ZookeeperSupport =>
+  self: ZookeeperSupport =>
 
   private val log = LoggerFactory.getLogger(classOf[GroupService])
 
@@ -44,17 +44,14 @@ trait GroupService {
    * Create a group with name <code>queueName</code> if it does not already exists.
    */
   def createGroup(groupName: String) {
-    val zk = zookeeperOrFail
     val path = formatGroupPath(groupName)
     try {
-
-      val stat = zk.exists(path, false)
-      if (stat == null) {
-        val created = zk.create(path, null /*data*/ , Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT)
-        log.info("Group " + groupName + " created on path <" + created + ">")
+      if (exists(path)) {
+        log.info("Group <{}> already exists: creation skipped", groupName)
       }
       else {
-        log.info("Group <{}> already exists: creation skipped", groupName)
+        val created = createPersistent(path)
+        log.info("Group " + groupName + " created on path <" + created + ">")
       }
     }
     catch {
@@ -72,9 +69,8 @@ trait GroupService {
    */
   def deleteGroup(groupName: String) {
     try {
-      val zk = zookeeperOrFail
       val path = formatGroupPath(groupName)
-      deleteRecursive(zk, path)
+      deleteRecursive(path)
       log.info("Group <{}> deleted", groupName)
     }
     catch {
@@ -86,9 +82,8 @@ trait GroupService {
 
   def joinGroup(groupName: String, memberName: String) {
     try {
-      val zk = zookeeperOrFail
       val path = formatMemberPath(groupName, memberName)
-      val created = zk.create(path, null /*data*/ , Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL)
+      val created = createEphemeral(path)
       log.info("<" + memberName + "> joined group <" + groupName + "> on path <" + created + ">")
     }
     catch {
@@ -100,9 +95,8 @@ trait GroupService {
 
   def leaveGroup(groupName: String, memberName: String) {
     try {
-      val zk = zookeeperOrFail
       val path = formatMemberPath(groupName, memberName)
-      delete(zk, path)
+      delete(path)
       log.info("<" + memberName + "> left group <" + groupName + ">")
     }
     catch {
@@ -114,9 +108,8 @@ trait GroupService {
 
   def listGroupMembers(groupName: String): Seq[String] = {
     try {
-      val zk = zookeeperOrFail
       val path = formatGroupPath(groupName)
-      getChildren(zk, path)
+      getChildren(path)
     }
     catch {
       case e: Exception =>
