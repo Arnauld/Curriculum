@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import org.codehaus.jackson.map.ObjectMapper
 import java.io._
 import org.codehaus.jackson.`type`.TypeReference
-import com.fasterxml.jackson.module.scala.ScalaModule
 import org.codehaus.jackson.{JsonToken, JsonParser, JsonGenerator, JsonFactory}
 
 trait ToJSON {

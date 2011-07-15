@@ -6,6 +6,12 @@ Curriculum: an EAV based curriculum vitae
 * [SBT 0.10.0](https://github.com/harrah/xsbt)
 * [SBT web plugin](https://github.com/siasia/xsbt-web-plugin)
 * [Scalatra](https://github.com/scalatra/scalatra)
+* [jackson JSON](http://jackson.codehaus.org/)
+* [Netty](http://www.jboss.org/netty)
+* [Google Guava](http://code.google.com/p/guava-libraries/)
+* [Hadoop Zookeeper](http://zookeeper.apache.org/)
+
+
 * [Berkeley DB](http://www.oracle.com/technetwork/database/berkeleydb/overview/index.html) for persistence
 * [Guice](http://code.google.com/p/google-guice/)
 
@@ -100,6 +106,12 @@ jetty
 
         ~sbt> jetty-run
 
+
+## Sbt
+
+switch to offline mode
+
+        set offline:=true
 
 JSON
 ==============================================
