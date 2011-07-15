@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch
 trait ZookeeperSpecsSupport {
   private val log = LoggerFactory.getLogger(classOf[ZookeeperSpecsSupport])
 
-  var serverOpt: Option[ZookeeperServerSupport] = None
+  var serverOpt: Option[ZookeeperEmbeddedServer] = None
 
   /**
    * Zookeeper data directory, path is based on class name to prevent
@@ -57,7 +57,7 @@ trait ZookeeperSpecsSupport {
   }
 
   def startZookeeperServer() {
-    val server = new ZookeeperServerSupport()
+    val server = new ZookeeperEmbeddedServer()
     serverOpt = Some(server)
     server.start(createZookeeperConfig())
   }

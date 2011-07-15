@@ -5,8 +5,8 @@ import java.io.File
 import org.apache.zookeeper.server.{NIOServerCnxn, ZooKeeperServer, ServerConfig}
 import org.slf4j.LoggerFactory
 
-class ZookeeperServerSupport {
-  private val log = LoggerFactory.getLogger(classOf[ZookeeperServerSupport])
+class ZookeeperEmbeddedServer {
+  private val log = LoggerFactory.getLogger(classOf[ZookeeperEmbeddedServer])
 
   var zkServerOpt: Option[ZooKeeperServer] = None
   var cnxnFactoryOpt: Option[NIOServerCnxn.Factory] = None

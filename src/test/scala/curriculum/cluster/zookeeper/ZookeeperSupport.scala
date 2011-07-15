@@ -5,7 +5,7 @@ import org.apache.zookeeper.KeeperException.NodeExistsException
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.apache.zookeeper.data.Stat
-import org.apache.zookeeper.{Watcher, CreateMode, ZooKeeper}
+import org.apache.zookeeper.{KeeperException, Watcher, CreateMode, ZooKeeper}
 
 trait ZookeeperSupport {
 
@@ -21,8 +21,75 @@ trait ZookeeperSupport {
     zk.getChildren(path, false)
   }
 
-  def watchChildren(zk: ZooKeeper, path: String, watcher:Watcher) {
-    val stat:Stat = null
+  def createPersistent(zk: ZooKeeper, path: String) {
+    createPersistent(zk, path, false)
+  }
+
+  def createPersistent(zk: ZooKeeper, path: String, createParents: Boolean) {
+    create(zk, path, CreateMode.PERSISTENT, createParents)
+  }
+
+  def createPersistentSequential(zk: ZooKeeper, path: String) {
+    createPersistentSequential(zk, path, false)
+  }
+
+  def createPersistentSequential(zk: ZooKeeper, path: String, createParents: Boolean) {
+    create(zk, path, CreateMode.PERSISTENT_SEQUENTIAL, createParents)
+  }
+
+  def createEphemeral(zk: ZooKeeper, path: String) {
+    createEphemeral(zk, path, false)
+  }
+
+  def createEphemeral(zk: ZooKeeper, path: String, createParents: Boolean) {
+    create(zk, path, CreateMode.EPHEMERAL, createParents)
+  }
+
+  def createEphemeralSequential(zk: ZooKeeper, path: String) {
+    createEphemeralSequential(zk, path, false)
+  }
+
+  def createEphemeralSequential(zk: ZooKeeper, path: String, createParents: Boolean) {
+    create(zk, path, CreateMode.EPHEMERAL_SEQUENTIAL, createParents)
+  }
+
+  def create(zk: ZooKeeper, path: String, createMode: CreateMode, createParents: Boolean) {
+    try {
+      rawCreate(zk, path, null /*data*/ , createMode)
+    }
+    catch {
+      case e: KeeperException.NoNodeException =>
+        if (createParents) {
+          parentPathOf(fullpath) match {
+            case Some(p) =>
+              // create parent notes that it is recursive :)
+              create(zk, p, createMode, createParents)
+              // retry
+              rawCreate(zk, path, null /*data*/ , createMode)
+            case _ =>
+              throw e
+          }
+        }
+        else {
+          throw e
+        }
+      case _ =>
+        throw e
+    }
+  }
+
+  private[zookeeper] def rawCreate(zk: ZooKeeper, path: String, data: Array[Byte], createMode: CreateMode) {
+    zk.create(path, data, Ids.OPEN_ACL_UNSAFE, createMode)
+  }
+
+  def parentPathOf(fullpath: String) = fullpath.lastIndexOf('/') match {
+    case x if (x == 0) => None //root case
+    case x if (x <= 0) => throw new IllegalArgumentException("Invalid path, does not at least start with '/'")
+    case x => Some(fullpath.substring(0, idx))
+  }
+
+  def watchChildren(zk: ZooKeeper, path: String, watcher: Watcher) {
+    val stat: Stat = null
     zk.getChildren(path, watcher, stat)
   }
 
@@ -41,13 +108,13 @@ trait ZookeeperSupport {
   /**
    * create all the necessary node to reach the nodePath
    */
-  def createAllIntermediaryMissingNodes(zk: ZooKeeper, nodePath: String, creator: NodeCb) {
+  def ensurePathExists(zk: ZooKeeper, nodePath: String, creator: NodeCb) {
     val parts = (
       if (nodePath.charAt(0) == '/')
         nodePath.substring(1)
       else
         nodePath).split("/")
-    
+
     log.debug("Path <{}> splitted into {}", nodePath, parts)
     parts.foldLeft("")({
       (base, fragment) =>
@@ -60,7 +127,7 @@ trait ZookeeperSupport {
   /**
    * Create a node if it doesn't exist yet.
    * Assumption is done that the parent exists.
-   * @see #createAllIntermediaryMissingNodes
+   * @see #ensurePathExists
    */
   def createNodeIfMissing(zk: ZooKeeper, nodePath: String, creator: NodeCb) {
     try {
@@ -84,7 +151,7 @@ trait ZookeeperSupport {
   }
 
   def getData(zk: ZooKeeper, nodePath: String): Array[Byte] = {
-    val stat:Stat = null
+    val stat: Stat = null
     zk.getData(nodePath, false, stat)
   }
 

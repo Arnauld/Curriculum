@@ -36,7 +36,7 @@ trait QueueService {
     try {
       val stat = zk.exists(path, false)
       if (stat == null) {
-        createAllIntermediaryMissingNodes(zk, path, persistentEmptyNodeCreator)
+        ensurePathExists(zk, path, persistentEmptyNodeCreator)
         log.info("Queue " + queueName + " created")
       }
       else {
@@ -132,8 +132,6 @@ trait QueueService {
       q
     })
   }
-
-
 }
 
 object Queue {
